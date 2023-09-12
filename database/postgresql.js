@@ -1,10 +1,14 @@
-const { Pool } = require('pg');
+const { Sequelize } = require('sequelize');
+require('dotenv').config();
 
-const pool = new Pool({
-  connectionString: "postgres://zhangzp349:KLAs3WuMot9y@ep-fragrant-glade-20662482-pooler.us-east-2.aws.neon.tech/neondb",
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
+const sequelize = new Sequelize(
+  process.env.RDS_DB_NAME,
+  process.env.RDS_USERNAME,
+  process.env.RDS_PASSWORD, {
+    host: process.env.RDS_HOSTNAME,
+    port: process.env.RDS_PORT,
+    dialect: 'postgres', 
+  }
+);
 
-module.exports = pool;
+module.exports = sequelize;

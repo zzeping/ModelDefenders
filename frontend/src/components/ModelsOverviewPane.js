@@ -37,13 +37,13 @@ function ModelsOverviewPane() {
                 <TableBody>
                 {!exercises ? "Loading" : exercises.map((row) => (
                     <TableRow
-                    key={row.modelName}
+                    key={row.modelname}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
                     <TableCell>
                         {"selectButton"}
                     </TableCell>
-                    <TableCell align="left">{row.modelName}</TableCell>
+                    <TableCell align="left">{row.modelname}</TableCell>
                     <TableCell>{row.type}</TableCell>
                     <TableCell>{row.difficulty}</TableCell>
                     </TableRow>
