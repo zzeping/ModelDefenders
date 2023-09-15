@@ -5,9 +5,49 @@ const User = require('../models/User');
 
 class userController {
 
-  static async register (req, res) {
+  // user management 
+  static async createUser(req, res) {
+    const user = req.body;
     try {
-      const { username, password} = req.body;
+      await User.create(user);
+      res.status(201).json({ message: "User created successfully!" })
+    } catch (err) {
+      res.status(400).json({ message: err.message })
+    }
+  }
+  static async updateUser(req, res) {
+    const id = req.params.id;
+    const newUser = req.body;
+    try {
+      await User.findByIdAndUpdate(id, newUser);
+      res.status(200).json({ message: "User update successfully!" })
+    } catch (err) {
+      res.status(404).json({ message: err.message })
+    }
+  }
+  static async deleteUser(req, res) {
+    const id = req.params.id;
+    try {
+      const result = await User.findByIdAndDelete(id);
+      res.status(200).json({ message: "User deleted successfully!" })
+    } catch (err) {
+      res.status(404).json({ message: err.message })
+    }
+  }
+  static async fetchAllUsers(req, res) {
+    try {
+        const users = await User.findAll();
+        res.status(200).json(users);
+    } catch (err) {
+        res.status(404).json({ message: err.message })
+    }
+}
+
+
+
+  static async register(req, res) {
+    try {
+      const { username, password } = req.body;
       const hashedPassword = await bcrypt.hash(password, 10);
       const user = await User.create({
         username,
@@ -19,7 +59,7 @@ class userController {
     }
   };
 
-  static async login (req, res) {
+  static async login(req, res) {
     try {
       const { username, password } = req.body;
       const user = await User.findOne({ username });

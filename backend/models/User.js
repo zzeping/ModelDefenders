@@ -1,7 +1,17 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const db = require('../../database/postgresql');
+require('dotenv').config();
 
-const User = db.define('User', {
+const sequelize = new Sequelize(
+  process.env.RDS_DB_NAME,
+  process.env.RDS_USERNAME,
+  process.env.RDS_PASSWORD, {
+    host: process.env.RDS_HOSTNAME,
+    port: process.env.RDS_PORT,
+    dialect: 'postgres', 
+  }
+);
+
+const User = sequelize.define('User', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
