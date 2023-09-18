@@ -28,7 +28,11 @@ class userController {
   static async deleteUser(req, res) {
     const id = req.params.id;
     try {
-      const result = await User.findByIdAndDelete(id);
+      const user = await User.findByPk(id);
+      if (!user) {
+        return res.status(401).json({ error: 'User not found.' });;
+      }
+      await user.destroy();
       res.status(200).json({ message: "User deleted successfully!" })
     } catch (err) {
       res.status(404).json({ message: err.message })
@@ -36,13 +40,26 @@ class userController {
   }
   static async fetchAllUsers(req, res) {
     try {
-        const users = await User.findAll();
-        res.status(200).json(users);
+      const users = await User.findAll();
+      res.status(200).json(users);
     } catch (err) {
-        res.status(404).json({ message: err.message })
+      res.status(404).json({ message: err.message })
     }
-}
+  }
 
+  static async fetchLogin(req, res) {
+    try {
+      const { username, password } = req.body;
+      const user = await User.findOne({where: { username }});
+      if (!user) {
+        return res.status(401).json({ error: 'Authentication failed' });
+      }
+      if (user.password !== password) return res.status(401).json({ error: 'Authentication failed' });
+      res.status(200).json(user);
+    } catch (err) {
+      res.status(404).json({ message: err.message })
+    }
+  }
 
 
   static async register(req, res) {

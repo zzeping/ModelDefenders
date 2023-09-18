@@ -4,8 +4,8 @@ const userController = require('../controllers/userController');
 const multer = require('multer');
 
 
-router.post('/register', userController.register);
-router.post('/login', userController.login);
+// router.post('/register', userController.register);
+// router.post('/login', userController.login);
 
 const upload = multer(); // Set up multer middleware to handle multipart/form-data
 
@@ -14,6 +14,7 @@ router.post('/', upload.none(), userController.createUser);
 router.get('/', userController.fetchAllUsers);
 router.patch('/:id', upload.none(),userController.updateUser);
 router.delete('/:id',userController.deleteUser);
+router.post('/login',upload.none(),userController.fetchLogin)
 
 
 module.exports = router;
