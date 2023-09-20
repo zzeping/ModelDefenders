@@ -1,7 +1,10 @@
-const axios = require('axios');
+import axios from 'axios';
 
 const axiosInstance = axios.create({
   baseURL: 'http://localhost:3001/api/user',
+  headers: {
+    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+  },
 });
 
 class APIClient {
@@ -9,9 +12,9 @@ class APIClient {
     this.endpoint = endpoint;
   }
 
-  getAll(config) {
+  getAll() {
     return axiosInstance
-      .get(this.endpoint, config)
+      .get(this.endpoint)
       .then((res) => res.data);
   }
 
@@ -20,6 +23,13 @@ class APIClient {
       .get(this.endpoint + '/' + id)
       .then((res) => res.data);
   }
+
+  post = (data) => {
+    return axiosInstance
+      .post(this.endpoint, data)
+      .then(res => res.data);
+  }
+
 }
 
-module.exports = APIClient;
+export default APIClient;

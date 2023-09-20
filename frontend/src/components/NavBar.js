@@ -8,8 +8,9 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useNavigate } from 'react-router-dom';
-import useAuthStore from '../authStore';
+import { useLogout } from '../hook/useAuth';
 import logo from "../assets/logo-white.svg";
+import useAuthStore from '../authStore';
 
 
 
@@ -17,9 +18,9 @@ import logo from "../assets/logo-white.svg";
 const Navbar = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const user = useAuthStore((state) => state.user);
-  const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const  { handleLogout } = useLogout();
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -29,9 +30,8 @@ const Navbar = () => {
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
-    handleMenuClose();
-    logout();
+  const handleOut = () => {
+    handleLogout();
     navigate('/login');
   };
 
@@ -73,7 +73,7 @@ const Navbar = () => {
               open={Boolean(anchorEl)}
               onClose={handleMenuClose}
             >
-              <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              <MenuItem onClick={handleOut}>Logout</MenuItem>
             </Menu>
           </>
         ) : (
