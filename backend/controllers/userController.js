@@ -7,12 +7,17 @@ class userController {
 
   // user management 
   static async createUser(req, res) {
-    const user = req.body;
+    const newUser = req.body;
     try {
-      await User.create(user);
-      res.status(201).json({ message: "User created successfully!" })
+      const existingUser = await User.findOne({ where: { username: newUser.username } });
+      if (existingUser) {
+        return res.status(409).json({ message: "Username already exists" });
+      }
+      await User.create(newUser);
+      return res.status(201).json({ message: "User created successfully!" });
     } catch (err) {
-      res.status(400).json({ message: err.message })
+      console.error(err);
+      return res.status(500).json({ message: "Internal server error" });
     }
   }
   static async updateUser(req, res) {

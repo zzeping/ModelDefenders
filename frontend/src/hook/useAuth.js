@@ -42,8 +42,15 @@ export function useRegister() {
 
     const registerMutation = useMutation(
         async ({ username, password }) => {
-            const response = await authClient_r.post({ username, password });
-            return response;
+            try {
+                const response = await authClient_r.post({ username, password });
+                return response.data; 
+            } catch (error) {
+                if (error.response?.status === 409) {
+                    throw new Error('Username already exists');
+                }
+                throw error;
+            }
         },
         {
             onSuccess: (data) => {

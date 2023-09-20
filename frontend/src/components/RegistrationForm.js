@@ -45,8 +45,13 @@ const RegistrationForm = () => {
         try {
             await handleRegister(username, password);
             navigate('/');
-        } catch (err) {
-            alert('Registration failed:', err);
+        } catch (error) {
+            console.error('Registration failed:', error);
+            if (error.message === 'Username already exists') {
+                setError_r('Username already exists.');
+            } else {
+                setError_r('Registration failed: ' + error.message);
+            }
             setUsername('');
             setPassword('');
             setConfirmPassword('');
