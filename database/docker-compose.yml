@@ -21,7 +21,7 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_DB: postgres
     container_name: my-postgres-container
-    volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    # volumes:
+    #   - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "54320:5432"
