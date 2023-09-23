@@ -9,12 +9,11 @@ class userController {
   static async createUser(req, res) {
     const newUser = req.body;
     try {
-      const existingUser = await User.findOne({ where: { username: newUser.username } });
-      if (existingUser) {
-        return res.status(409).json({ message: "Username already exists" });
-      }
-      await User.create(newUser);
-      return res.status(201).json({ message: "User created successfully!" });
+      const createdUser = await User.create(newUser);
+      const token = jwt.sign({ userId: createdUser.id }, 'secret_key', {
+        expiresIn: '1h',
+      });
+      return res.status(200).json({ token, user: createdUser });
     } catch (err) {
       console.error(err);
       return res.status(500).json({ message: "Internal server error" });

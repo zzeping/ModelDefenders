@@ -44,9 +44,9 @@ export function useRegister() {
         async ({ username, password }) => {
             try {
                 const response = await authClient_r.post({ username, password });
-                return response.data; 
+                return response; 
             } catch (error) {
-                if (error.response?.status === 409) {
+                if (error.response?.status === 500) {
                     throw new Error('Username already exists');
                 }
                 throw error;
@@ -54,7 +54,8 @@ export function useRegister() {
         },
         {
             onSuccess: (data) => {
-                login(data);
+                login(data.token, data.user);
+                localStorage.setItem('token', data.token);
             },
         }
     );
