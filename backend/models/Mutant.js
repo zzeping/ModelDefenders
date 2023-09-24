@@ -1,15 +1,5 @@
-const { Sequelize, DataTypes } = require('sequelize');
-require('dotenv').config();
+const { sequelize, DataTypes } = require('./db')
 
-const sequelize = new Sequelize(
-    process.env.RDS_DB_NAME,
-    process.env.RDS_USERNAME,
-    process.env.RDS_PASSWORD, {
-    host: process.env.RDS_HOSTNAME,
-    port: process.env.RDS_PORT,
-    dialect: 'postgres',
-}
-);
 
 const Mutant = sequelize.define('Mutant', {
     id: {
@@ -24,6 +14,14 @@ const Mutant = sequelize.define('Mutant', {
     },
     MXP: {
         type: DataTypes.STRING,
+        allowNull: false,
+    },
+    userId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+    },
+    gameId: {
+        type: DataTypes.UUID,
         allowNull: false,
     },
 

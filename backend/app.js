@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true}));
 
 app.use('/api/user', require('./routes/userRoutes'));
 app.use('/api/model', require('./routes/modelRoutes'));
-// app.use('/api/game', require('./routes/gameRoutes'));
+app.use('/api/game', require('./routes/gameRoutes'));
 
 //Keep this at end of file
 app.listen(PORT, () => {

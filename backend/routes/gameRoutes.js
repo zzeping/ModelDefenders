@@ -2,10 +2,14 @@
 const express = require('express');
 const router = express.Router();
 const gameController = require('../controllers/gameController');
-const authMiddleware = require('../middleware/authMiddleware');
+const multer = require('multer');
 
-router.use(authMiddleware.authenticate); // Middleware for authentication
 
-router.get('/games', gameController.getGamesForUser);
+const upload = multer(); 
+
+router.post('/', upload.none(), gameController.createGame);
+router.get('/', gameController.getAllGames);
+router.get('/availables', gameController.getAvailableGames);
+router.post('/join', upload.none(), gameController.joinGame)
 
 module.exports = router;

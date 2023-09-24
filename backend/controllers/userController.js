@@ -5,7 +5,6 @@ const User = require('../models/User');
 
 class userController {
 
-  // user management 
   static async createUser(req, res) {
     const newUser = req.body;
     try {
@@ -13,7 +12,7 @@ class userController {
       const token = jwt.sign({ userId: createdUser.id }, 'secret_key', {
         expiresIn: '1h',
       });
-      res.status(200).json({ token, user: createdUser });
+      res.status(201).json({ token, user: createdUser });
     } catch (err) {
       console.error(err);
       res.status(400).json({ message: err.message });
