@@ -13,20 +13,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
 
 
-// app.get('/exercises', async (req, res) => {
-//   const client = await postgresql.connect();
-//   client.query(
-//     `SELECT * FROM model`
-//     , (error, results) => {
-//       client.release();
-//       if (error) throw error;
-//       res.status(200).send(results.rows);
-//       // console.log('Query result:', results.rows);
-
-//     })
-// });
-
 app.use('/api/user', require('./routes/userRoutes'));
+app.use('/api/model', require('./routes/modelRoutes'));
+// app.use('/api/game', require('./routes/gameRoutes'));
 
 //Keep this at end of file
 app.listen(PORT, () => {

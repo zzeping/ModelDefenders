@@ -13,10 +13,10 @@ class userController {
       const token = jwt.sign({ userId: createdUser.id }, 'secret_key', {
         expiresIn: '1h',
       });
-      return res.status(200).json({ token, user: createdUser });
+      res.status(200).json({ token, user: createdUser });
     } catch (err) {
       console.error(err);
-      return res.status(500).json({ message: "Internal server error" });
+      res.status(400).json({ message: err.message });
     }
   }
   static async updateUser(req, res) {

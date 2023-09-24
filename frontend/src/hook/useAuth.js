@@ -46,9 +46,6 @@ export function useRegister() {
                 const response = await authClient_r.post({ username, password });
                 return response; 
             } catch (error) {
-                if (error.response?.status === 500) {
-                    throw new Error('Username already exists');
-                }
                 throw error;
             }
         },

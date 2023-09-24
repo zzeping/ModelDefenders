@@ -17,7 +17,15 @@ const Model = sequelize.define('Model', {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4
     },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
     MXP: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    image: {
         type: DataTypes.STRING,
         allowNull: false,
     },
