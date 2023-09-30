@@ -39,9 +39,9 @@ const Navbar = () => {
     <AppBar position="static">
       <Toolbar>
         <img src={logo} alt="Logo" style={{ marginRight: '16px' }} />
-        <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          ModelDefenders
-        </Typography>
+          <Typography variant="h6" sx={{ flexGrow: 1, cursor: 'pointer' }} onClick={() => navigate('/')}>
+            ModelDefenders
+          </Typography>
         {isAuthenticated ? (
           <><Typography variant="body1" sx={{ marginRight: '8px' }}>
             Hi, {user.username}

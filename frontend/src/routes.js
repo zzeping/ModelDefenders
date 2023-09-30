@@ -4,6 +4,7 @@ import ErrorPage from "./pages/ErrorPage";
 import Layout from "./pages/Layout";
 import PrivateRoute from './PrivateRoute';
 import LoginPage from "./pages/LoginPage";
+import CreateGame from "./pages/CreateGame";
 
 
 const router = createBrowserRouter([
@@ -20,11 +21,16 @@ const router = createBrowserRouter([
   {
     element: <PrivateRoute />,
     errorElement: <ErrorPage />,
-    children:[
-      { index: '/', 
-      element:<Layout />,
-      children: [{ index: true, element: <HomePage /> }]
-    },
+    children: [
+      {
+        index: '/',
+        element: <Layout />,
+        children: [
+          { index: true, element: <HomePage /> },
+          { path: 'create', element: <CreateGame /> },
+        ]
+      },
+      
     ]
   },
 ]);

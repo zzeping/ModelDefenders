@@ -1,9 +1,11 @@
 import AvailableGames from '../components/AvailableGames';
 import { Button, Typography, Box } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+
 
 
 const HomePage = () => {
-    console.log("go to home. ");
+    const navigate = useNavigate();
 
     return (
         <>
@@ -16,6 +18,7 @@ const HomePage = () => {
                     color="primary"
                     variant="contained"
                     style={{ width: '100%' }}
+                    onClick={() => navigate('/create')}
                 >Create Game</Button>
             </Box>
 

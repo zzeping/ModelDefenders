@@ -3,10 +3,12 @@ import { TableContainer, Table, Button, Paper, TableHead, TableRow, TableCell, B
 import ModelInfo from './ModelInfo';
 import UserInfo from './UserInfo';
 import useGames from '../hook/useGames'
+import useModels from '../hook/useModels';
 
 
 const AvailableGames = () => {
   const { data: availableGames, isLoading, isError } = useGames();
+  const { data: models } = useModels();
   const [selectedGame, setSelectedGame] = useState('');
   const [modelImage, setModelImage] = useState(null);
 
@@ -14,9 +16,14 @@ const AvailableGames = () => {
     setSelectedGame(event.target.value);
   };
 
-  const changeImage = (img) => {
-    setModelImage(img)
-  }
+
+  useEffect(() => {
+    if (availableGames && selectedGame && models) {
+        const game = availableGames.find(game => game.id === selectedGame);
+        const model = models.find(model => model.id === game.modelId);
+        setModelImage(model.image)
+    }
+}, [selectedGame])
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -56,7 +63,7 @@ const AvailableGames = () => {
                           control={<Radio />} />
                       </RadioGroup>
                     </TableCell>
-                    <ModelInfo gameId={game.id} modelId={game.modelId} selectedGame={selectedGame} changeImage={changeImage} />
+                    <ModelInfo modelId={game.modelId} />
                     <UserInfo userId={game.ownerId} />
                   </TableRow>
                 ))}

@@ -2,7 +2,7 @@ import useModel from "../hook/useModel";
 import { TableCell } from '@mui/material';
 
 
-const ModelInfo = ({ modelId, selectedGame, changeImage, gameId }) => {
+const ModelInfo = ({ modelId }) => {
     const { data: model, isLoading, isError } = useModel(modelId);
     if (isLoading) {
         return <TableCell>Loading...</TableCell>;
@@ -14,9 +14,6 @@ const ModelInfo = ({ modelId, selectedGame, changeImage, gameId }) => {
         return null;
     }
 
-    if (selectedGame == gameId) {
-        changeImage(model.image)
-    }
     return (
         <>
             <TableCell>{model.name}</TableCell>
