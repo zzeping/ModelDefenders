@@ -24,6 +24,30 @@ class gameController {
     }
   }
 
+  static async getGame(req, res) {
+    const id = req.params.id;
+    try {
+      const game = await Game.findOne({ where: { id } });
+      res.status(200).json(game);
+    } catch (err) {
+      res.status(404).json({ message: err.message })
+    }
+  }
+
+  static async deleteGame(req, res) {
+    const id = req.params.id;
+    try {
+      const game = await Game.findByPk(id);
+      if (!game) {
+        return res.status(401).json({ error: 'Game not found.' });;
+      }
+      await game.destroy();
+      res.status(200).json({ message: "Game deleted successfully!" })
+    } catch (err) {
+      res.status(404).json({ message: err.message })
+    }
+  }
+
   static async getAvailableGames(req, res) {
     try {
       const availableGames = await Game.findAll({
@@ -41,7 +65,7 @@ class gameController {
   }
 
   static async joinGame(req, res) {
-    const userId = req.params.userId; 
+    const userId = req.params.userId;
     const gameId = req.params.gameId;
     try {
       const game = await Game.findByPk(gameId);

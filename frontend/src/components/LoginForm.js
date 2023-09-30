@@ -24,8 +24,8 @@ const LoginForm = () => {
         const token = localStorage.getItem('token');
         if (token && !user) {
             const decoded = jwtDecode(token);
-            const apiClient = new APIClient('');
-            apiClient.get(decoded.userId)
+            const apiClient = new APIClient('/user');
+            apiClient.get(decoded.userId, token)
                 .then((userData) => {
                     login(token, userData);
                     navigate('/');

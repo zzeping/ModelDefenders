@@ -2,9 +2,6 @@ import axios from 'axios';
 
 const axiosInstance = axios.create({
   baseURL: 'http://localhost:3001/api',
-  headers: {
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-  },
 });
 
 class APIClient {
@@ -18,9 +15,16 @@ class APIClient {
       .then((res) => res.data);
   }
 
-  get(id) {
+  // pass token to check if authorized. 
+  get(id, token) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
     return axiosInstance
-      .get(this.endpoint + '/' + id)
+      .get(this.endpoint + '/' + id, config)
       .then((res) => res.data);
   }
 
