@@ -4,7 +4,7 @@ import APIClient from '../services/api-client';
 const gamesApiClient = new APIClient('/game/availables');
 
 const useAvailableGames = () => {
-  return useQuery('availableGames', async () => {
+  return useQuery('games', async () => {
 
     const availableGames = await gamesApiClient.getAll();
 

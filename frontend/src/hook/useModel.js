@@ -4,7 +4,7 @@ import APIClient from '../services/api-client';
 const modelApiClient = new APIClient('/model');
 
 const useModel = (id) => {
-  return useQuery(['model', id], async () => {
+  return useQuery(['models', id], async () => {
 
     const model = await modelApiClient.get(id);
 

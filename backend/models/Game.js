@@ -20,6 +20,11 @@ const Game = sequelize.define('Game', {
   attackerId: {
     type: DataTypes.UUID,
   },
+  notation: {
+    type: DataTypes.ENUM('MERODE', 'UML'),
+    allowNull: false,
+    defaultValue: 'MERODE',
+  }
 });
 
 Game.associate = (models) => {

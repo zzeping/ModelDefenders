@@ -27,8 +27,13 @@ const LoginForm = () => {
             const apiClient = new APIClient('/user');
             apiClient.get(decoded.userId, token)
                 .then((userData) => {
-                    login(token, userData);
-                    navigate('/');
+                    if (!userData) {
+                        logout();
+                        localStorage.removeItem('token');
+                    } else {
+                        login(token, userData);
+                        navigate('/');
+                    }
                 })
                 .catch((error) => {
                     console.error('Error fetching user:', error);

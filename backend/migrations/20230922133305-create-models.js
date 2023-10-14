@@ -21,18 +21,24 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      createType: {
-        type: Sequelize.ENUM('lecturer', 'student'),
+      // createType: {
+      //   type: Sequelize.ENUM('lecturer', 'student'),
+      //   allowNull: false,
+      //   defaultValue: 'student',
+      // },
+      ownerId: {
+        type: Sequelize.UUID,
         allowNull: false,
+        references: {
+          model: 'Users',
+          key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       type: {
         type: Sequelize.ENUM('EDG', 'FSM'),
         allowNull: false,
-      },
-      notation: {
-        type: Sequelize.ENUM('MERODE', 'UML'),
-        allowNull: false,
-        defaultValue: 'MERODE',
       },
       difficulty: {
         type: Sequelize.ENUM('Easy', 'Intermediate', 'Advanced'),

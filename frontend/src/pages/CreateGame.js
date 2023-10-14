@@ -2,16 +2,51 @@ import React, { useEffect, useState } from 'react';
 import { TableContainer, Chip, Table, InputLabel, FormControl, Select, MenuItem, Button, Paper, TableHead, TableRow, TableCell, Box, Typography, TableBody, Grid, Radio, RadioGroup, FormControlLabel } from '@mui/material';
 import useModels from '../hook/useModels';
 import { useNavigate } from 'react-router-dom';
-
-
+import useAddGame from '../hook/useAddGame';
+import useAuthStore from '../authStore';
+import CreateModel from '../components/CreateModel';
 
 const CreateGame = () => {
     const { data: models, isLoading, isError } = useModels();
+    const { handleAddGame, isAdding, error } = useAddGame();
     const [selectedModel, setSelectedModel] = useState('');
     const [modelImage, setModelImage] = useState(null);
     const [notation, setNotation] = useState('MERODE');
     const [role, setRole] = useState('');
+    const user = useAuthStore((state) => state.user);
     const navigate = useNavigate();
+
+    const handleAdd = async (e) => {
+        e.preventDefault();
+
+        let attackerId = null;
+        let defenderId = null;
+        if (role === 'Attacker') {
+            attackerId = user.id;
+        } else if (role === 'Defender') {
+            defenderId = user.id;
+        }
+
+        console.log({
+            modelId: selectedModel,
+            ownerId: user.id,
+            notation,
+            attackerId,
+            defenderId,
+        })
+        try {
+            const newGame = await handleAddGame({
+                modelId: selectedModel,
+                ownerId: user.id,
+                notation,
+                attackerId,
+                defenderId,
+            })
+            navigate('/')
+        } catch (error) {
+            alert('Unable to add the Game.');
+        }
+    }
 
 
     useEffect(() => {
@@ -47,7 +82,7 @@ const CreateGame = () => {
                 <Typography variant="h6" style={{ textAlign: 'center' }}>
                     Models overview
                 </Typography>
-                <Paper style={{ height: '42vh', overflowY: 'auto', width: '100%' }} >
+                <Paper style={{ height: '40vh', overflowY: 'auto', width: '100%' }} >
                     <TableContainer style={{ display: 'flex', justifyContent: 'center' }}>
 
                         <Table sx={{ maxWidth: 550 }} size="small">
@@ -91,7 +126,8 @@ const CreateGame = () => {
                         </Table>
                     </TableContainer>
                 </Paper>
-                <Box style={{ marginTop: '138px' }}>
+                <CreateModel />
+                <Box style={{ marginTop: '122px' }}>
                     <Typography variant="h5">Game settings</Typography>
                     <FormControl sx={{ m: 1, minWidth: 120 }} style={{ marginLeft: '30px' }} size="small">
                         <InputLabel htmlFor="notation">Notation</InputLabel>
@@ -130,15 +166,17 @@ const CreateGame = () => {
 
                     )}
                 </Box >
-                <Box style={{ marginTop: '150px' }}>
+                <Box style={{ marginTop: '153px' }}>
                     <Typography variant="h5">Start game</Typography>
                     <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
                         <Button
                             color="primary"
                             variant="contained"
                             style={{ width: '100%' }}
-                        // onClick={() => navigate('/create')}
-                        >Create Game</Button>
+                            disabled={selectedModel === ''}
+                            onClick={handleAdd}
+                        >{isAdding ? 'Adding...' : 'Create Game'}</Button>
+                        {error && <div>Error: {error.message}</div>}
                     </Box>
                 </Box>
             </Grid>

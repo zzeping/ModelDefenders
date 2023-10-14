@@ -16,6 +16,8 @@ module.exports = {
           model: 'Models',
           key: 'id',
         },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       ownerId: {
         type: Sequelize.UUID,
@@ -40,6 +42,11 @@ module.exports = {
           model: 'Users',
           key: 'id',
         },
+      },
+      notation: {
+        type: Sequelize.ENUM('MERODE', 'UML'),
+        allowNull: false,
+        defaultValue: 'MERODE',
       },
       createdAt: {
         allowNull: false,

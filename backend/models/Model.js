@@ -19,10 +19,15 @@ const Model = sequelize.define('Model', {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    createType: {
-        type: DataTypes.ENUM('lecturer', 'student'),
+    ownerId: {
+        type: DataTypes.UUID,
         allowNull: false,
     },
+    // createType: {
+    //     type: DataTypes.ENUM('lecturer', 'student'),
+    //     allowNull: false,
+    //     defaultValue: 'student',
+    // },
     type: {
         type: DataTypes.ENUM('EDG', 'FSM'),
         allowNull: false,
@@ -31,15 +36,11 @@ const Model = sequelize.define('Model', {
         type: DataTypes.ENUM('Easy', 'Intermediate', 'Advanced'),
         allowNull: false,
     },
-    notation: {
-        type: DataTypes.ENUM('MERODE', 'UML'),
-        allowNull: false,
-        defaultValue: 'MERODE',
-    },
 });
 
 Model.associate = (models) => {
     Model.hasMany(models.Game, { foreignKey: 'modelId', as: 'games', onDelete: 'CASCADE' });
+    Model.belongsTo(models.User, { foreignKey: 'ownerId' });
 }
 
 module.exports = Model;

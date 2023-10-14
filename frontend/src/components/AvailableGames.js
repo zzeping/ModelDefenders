@@ -19,11 +19,11 @@ const AvailableGames = () => {
 
   useEffect(() => {
     if (availableGames && selectedGame && models) {
-        const game = availableGames.find(game => game.id === selectedGame);
-        const model = models.find(model => model.id === game.modelId);
-        setModelImage(model.image)
+      const game = availableGames.find(game => game.id === selectedGame);
+      const model = models.find(model => model.id === game.modelId);
+      setModelImage(model.image)
     }
-}, [selectedGame])
+  }, [selectedGame])
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -34,7 +34,7 @@ const AvailableGames = () => {
 
   return (
     <Grid container spacing={3} style={{ display: 'flex', justifyContent: 'center' }}>
-      <Grid item xs={5}>
+      <Grid item xs={6}>
         <Typography variant="h5">Active games</Typography>
         <Typography variant="h6" style={{ textAlign: 'center' }}>
           Games overview
@@ -42,13 +42,15 @@ const AvailableGames = () => {
         <Paper style={{ height: '40vh', overflowY: 'auto', width: '100%' }} >
           <TableContainer style={{ display: 'flex', justifyContent: 'center' }}>
 
-            <Table sx={{ maxWidth: 550 }} size="small">
+            <Table sx={{ maxWidth: 650 }} size="small">
               <TableHead>
                 <TableRow>
                   <TableCell>Select</TableCell>
                   <TableCell>Model name</TableCell>
                   <TableCell>Type</TableCell>
                   <TableCell>Creator</TableCell>
+                  <TableCell>Attacker</TableCell>
+                  <TableCell>Defender</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -65,6 +67,16 @@ const AvailableGames = () => {
                     </TableCell>
                     <ModelInfo modelId={game.modelId} />
                     <UserInfo userId={game.ownerId} />
+                    {game.attackerId !== null ? (
+                      <UserInfo userId={game.attackerId} />
+                    ) : (
+                      <TableCell>Empty</TableCell>
+                    )}
+                    {game.defenderId !== null ? (
+                      <UserInfo userId={game.defenderId} />
+                    ) : (
+                      <TableCell>Empty</TableCell>
+                    )}
                   </TableRow>
                 ))}
               </TableBody>

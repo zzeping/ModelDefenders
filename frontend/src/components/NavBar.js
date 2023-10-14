@@ -42,7 +42,7 @@ const Navbar = () => {
           <Typography variant="h6" sx={{ flexGrow: 1, cursor: 'pointer' }} onClick={() => navigate('/')}>
             ModelDefenders
           </Typography>
-        {isAuthenticated ? (
+        {isAuthenticated && user ? (
           <><Typography variant="body1" sx={{ marginRight: '8px' }}>
             Hi, {user.username}
           </Typography>

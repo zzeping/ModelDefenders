@@ -7,7 +7,7 @@ const userApiClient = new APIClient('/user');
 
 const useUser = (id) => {
   const navigate = useNavigate();
-  return useQuery(['user', id], async () => {
+  return useQuery(['users', id], async () => {
     const token = localStorage.getItem('token')
     try {
       const user = await userApiClient.get(id, token);
