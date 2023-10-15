@@ -3,7 +3,7 @@ import { TableContainer, Chip, Table, InputLabel, FormControl, Select, MenuItem,
 import useModels from '../hook/useModels';
 import { useNavigate } from 'react-router-dom';
 import useAddGame from '../hook/useAddGame';
-import useAuthStore from '../authStore';
+import useAuthStore from '../store/authStore';
 import CreateModel from '../components/CreateModel';
 
 const CreateGame = () => {
@@ -95,7 +95,7 @@ const CreateGame = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {models.map((model) => (
+                                {models && models.map((model) => (
                                     <TableRow key={model.id}>
                                         <TableCell>
                                             <RadioGroup

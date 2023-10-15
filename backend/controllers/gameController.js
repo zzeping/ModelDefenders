@@ -49,13 +49,38 @@ class gameController {
   }
 
   static async getAvailableGames(req, res) {
+    const id = req.params.id;
     try {
       const availableGames = await Game.findAll({
         where: {
           [Op.or]: [
-            { defenderId: null },
-            { attackerId: null },
-          ],
+            {
+              [Op.and]: [
+                { defenderId: null },
+                {
+                  attackerId: {
+                    [Op.not]: id,
+                  },
+                },
+              ],
+            },
+            {
+              [Op.and]: [
+                { attackerId: null },
+                {
+                  defenderId: {
+                    [Op.not]: id,
+                  },
+                },
+              ],
+            },
+            {
+              [Op.and]: [
+                { attackerId: null },
+                { defenderId: null },
+              ],
+            },
+          ]
         },
       });
       res.status(200).json(availableGames);
@@ -64,20 +89,39 @@ class gameController {
     }
   }
 
+  static async getUserGames(req, res) {
+    const id = req.params.id;
+    try {
+      const userGames = await Game.findAll({
+        where: {
+          [Op.or]: [
+            { defenderId: id },
+            { attackerId: id },
+            { ownerId: id },
+          ],
+        },
+      });
+      res.status(200).json(userGames);
+    } catch (err) {
+      res.status(404).json({ message: err.message })
+    }
+  }
+
   static async joinGame(req, res) {
-    const userId = req.params.userId;
-    const gameId = req.params.gameId;
+    const userId = req.body.userId;
+    const gameId = req.body.gameId;
+    const role = req.body.role;
     try {
       const game = await Game.findByPk(gameId);
       if (!game) {
         return res.status(404).json({ message: 'Game not found.' });
       }
-      if (game.defenderId === null) {
+      if (role === "defender") {
         game.defenderId = userId;
-      } else if (game.attackerId === null) {
+      } else if (role === "attacker") {
         game.attackerId = userId;
       } else {
-        return res.status(400).json({ message: 'Game is already full.' });
+        return res.status(400).json({ message: 'Cannot join as defender or attacker.' });
       }
       await game.save();
       res.status(200).json({ message: 'Joined the game successfully.', game });

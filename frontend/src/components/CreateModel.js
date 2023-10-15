@@ -1,7 +1,7 @@
 import { Dialog, Button, Box, DialogTitle, FormControl, InputLabel, MenuItem, Select, DialogContentText, DialogContent, DialogActions, TextField } from '@mui/material';
 import React, { useState } from 'react';
 import useAddModel from '../hook/useAddModel';
-import useAuthStore from '../authStore';
+import useAuthStore from '../store/authStore';
 
 
 const CreateModel = () => {

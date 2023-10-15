@@ -21,6 +21,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.post('/', upload.fields([{ name: 'MXP', maxCount: 1 }, { name: 'image', maxCount: 1 }]), modelController.createModel);
+router.get('/user/:id', modelController.getUserModels);
+router.get('/admin', modelController.getAdminModels);
 router.get('/', modelController.getAllModels);
 router.get('/:id', modelController.fetchModel);
 router.delete('/:id', modelController.deleteModel);

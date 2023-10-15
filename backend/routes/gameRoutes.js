@@ -10,7 +10,9 @@ const upload = multer();
 router.post('/', upload.none(), gameController.createGame);
 router.get('/', gameController.getAllGames);
 router.delete('/:id', gameController.deleteGame);
-router.get('/availables', gameController.getAvailableGames);
+
+router.get('/user/:id', gameController.getUserGames);
+router.get('/availables/:id', gameController.getAvailableGames);
 router.get('/:id', gameController.getGame);
 router.post('/join', upload.none(), gameController.joinGame)
 

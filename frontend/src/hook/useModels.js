@@ -1,15 +1,17 @@
 import { useQuery } from 'react-query';
 import APIClient from '../services/api-client'; 
+import useAuthStore from '../store/authStore';
 
-const modelsApiClient = new APIClient('/model');
+const modelsApiClient = new APIClient('/model/user');
 
-const useModels = () => {
+const useUserModels = () => {
+  const user = useAuthStore((state) => state.user);
   return useQuery('models', async () => {
 
-    const models = await modelsApiClient.getAll();
+    const models = await modelsApiClient.get(user.id);
 
     return models;
   });
 };
 
-export default useModels;
+export default useUserModels;

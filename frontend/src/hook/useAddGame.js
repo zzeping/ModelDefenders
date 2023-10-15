@@ -6,7 +6,7 @@ const gameClient = new APIClient('/game');
 const useAddGame = () => {
 
   const addGameMutation = useMutation(
-    'games', 
+    'user_games', 
     async ({modelId, ownerId, defenderId, attackerId, notation}) => {
       return await gameClient.post({modelId, ownerId, defenderId, attackerId, notation});
     }

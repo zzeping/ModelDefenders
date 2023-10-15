@@ -10,7 +10,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useNavigate } from 'react-router-dom';
 import { useLogout } from '../hook/useAuth';
 import logo from "../assets/logo-white.svg";
-import useAuthStore from '../authStore';
+import useAuthStore from '../store/authStore';
 
 
 
@@ -74,6 +74,7 @@ const Navbar = () => {
               onClose={handleMenuClose}
             >
               <MenuItem onClick={handleOut}>Logout</MenuItem>
+              <MenuItem onClick={() => navigate('/delete')}>Delete page</MenuItem>
             </Menu>
           </>
         ) : (

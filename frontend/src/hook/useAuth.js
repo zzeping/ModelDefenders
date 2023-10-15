@@ -1,6 +1,6 @@
 import { useMutation } from 'react-query';
 import APIClient from '../services/api-client';
-import useAuthStore from '../authStore';
+import useAuthStore from '../store/authStore';
 
 const authClient = new APIClient('/user/login');
 const authClient_r = new APIClient('/user/register');

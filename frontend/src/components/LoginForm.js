@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useLogin } from '../hook/useAuth';
 import { Button, TextField, IconButton, InputAdornment, OutlinedInput, InputLabel, FormControl } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import useAuthStore from '../authStore'
+import useAuthStore from '../store/authStore'
 import jwtDecode from "jwt-decode";
 import APIClient from '../services/api-client';
 

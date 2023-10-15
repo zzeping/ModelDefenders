@@ -1,4 +1,5 @@
 const Model = require('../models/Model');
+const User = require('../models/User');
 const fs = require('fs');
 
 class modelController {
@@ -8,13 +9,39 @@ class modelController {
         const modelData = req.body;
         try {
             const newModel = await Model.create({
-                MXP: MXP[0].filename, 
+                MXP: MXP[0].filename,
                 image: image[0].filename,
                 ...modelData,
             });
             res.status(201).json({ message: "Model created successfully!", model: newModel })
         } catch (err) {
             res.status(400).json({ message: err.message })
+        }
+    }
+
+    static async getUserModels(req, res) {
+        const id = req.params.id;
+        try {
+            const models = await Model.findAll({
+                where: { ownerId: id }
+            });
+            res.status(200).json(models);
+        } catch (err) {
+            res.status(404).json({ message: err.message })
+        }
+    }
+
+    static async getAdminModels(req, res) {
+        try {
+            const models = await Model.findAll({
+                include: [{
+                    model: User,
+                    where: { role: 'admin' }
+                }],
+            });
+            res.status(200).json(models);
+        } catch (err) {
+            res.status(404).json({ message: err.message })
         }
     }
 

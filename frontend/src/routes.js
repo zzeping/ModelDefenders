@@ -5,7 +5,7 @@ import Layout from "./pages/Layout";
 import PrivateRoute from './PrivateRoute';
 import LoginPage from "./pages/LoginPage";
 import CreateGame from "./pages/CreateGame";
-
+import DeletePage from "./pages/DeletePage";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +28,7 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: <HomePage /> },
           { path: 'create', element: <CreateGame /> },
+          { path: 'delete', element: <DeletePage /> },
         ]
       },
       
