@@ -1,16 +1,20 @@
 const Model = require('../models/Model');
 const User = require('../models/User');
 const fs = require('fs');
+const parseMXP = require('./mxpParser');
 
 class modelController {
 
     static async createModel(req, res) {
         const { MXP, image } = req.files;
         const modelData = req.body;
+        const parsedMXP = await parseMXP(MXP[0].path);
+        console.log(parsedMXP)
         try {
             const newModel = await Model.create({
                 MXP: MXP[0].filename,
                 image: image[0].filename,
+                content: parsedMXP,
                 ...modelData,
             });
             res.status(201).json({ message: "Model created successfully!", model: newModel })

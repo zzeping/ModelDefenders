@@ -15,6 +15,10 @@ const Model = sequelize.define('Model', {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    content: {
+        type: DataTypes.JSONB,
+        allowNull: false,
+      },
     image: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -23,11 +27,6 @@ const Model = sequelize.define('Model', {
         type: DataTypes.UUID,
         allowNull: false,
     },
-    // createType: {
-    //     type: DataTypes.ENUM('lecturer', 'student'),
-    //     allowNull: false,
-    //     defaultValue: 'student',
-    // },
     type: {
         type: DataTypes.ENUM('EDG', 'FSM'),
         allowNull: false,

@@ -40,6 +40,7 @@ const CreateModel = () => {
         formData.append('ownerId', user.id);
         try {
             const newModel = await handleAddModel(formData)
+            console.log(newModel)
         } catch (error) {
             console.error('Axios error:', error);
         }

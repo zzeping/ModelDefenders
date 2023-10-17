@@ -74,7 +74,7 @@ const Navbar = () => {
               onClose={handleMenuClose}
             >
               <MenuItem onClick={handleOut}>Logout</MenuItem>
-              <MenuItem onClick={() => navigate('/delete')}>Delete page</MenuItem>
+              <MenuItem onClick={() => navigate('/delete')}>Manage my games</MenuItem>
             </Menu>
           </>
         ) : (

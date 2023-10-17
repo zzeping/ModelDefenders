@@ -21,11 +21,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      // createType: {
-      //   type: Sequelize.ENUM('lecturer', 'student'),
-      //   allowNull: false,
-      //   defaultValue: 'student',
-      // },
+      content: {
+        allowNull: false,
+        type: Sequelize.JSONB
+      },
       ownerId: {
         type: Sequelize.UUID,
         allowNull: false,
