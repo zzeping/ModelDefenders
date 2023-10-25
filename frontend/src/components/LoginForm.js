@@ -6,7 +6,8 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import useAuthStore from '../store/authStore'
 import jwtDecode from "jwt-decode";
 import APIClient from '../services/api-client';
-
+import useGamesStore from '../store/gamesStore';
+import useBattleFieldStore from '../store/battleFieldStore';
 
 const LoginForm = () => {
 
@@ -16,6 +17,8 @@ const LoginForm = () => {
     const { handleLogin, isLoading, error } = useLogin();
     const [showPassword, setShowPassword] = React.useState(false);
     const { login, logout } = useAuthStore();
+    const { removeGames } = useGamesStore();
+    const { leaveField } = useBattleFieldStore();
     const user = useAuthStore((state) => state.user)
 
     // when login page is loaded, this will run to check if the user is already login. 
@@ -29,6 +32,8 @@ const LoginForm = () => {
                 .then((userData) => {
                     if (!userData) {
                         logout();
+                        removeGames();
+                        leaveField();
                         localStorage.removeItem('token');
                     } else {
                         login(token, userData);
@@ -38,6 +43,8 @@ const LoginForm = () => {
                 .catch((error) => {
                     console.error('Error fetching user:', error);
                     logout();
+                    removeGames();
+                    leaveField();
                     localStorage.removeItem('token');
                 });
         }

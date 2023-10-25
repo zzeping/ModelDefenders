@@ -1,5 +1,5 @@
 import useModel from "../hook/useModel";
-import { TableCell } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 
 
 const ModelImage = ({ modelId }) => {
@@ -16,7 +16,10 @@ const ModelImage = ({ modelId }) => {
 
     return (
         <>
-            <img src={`/image/${model.image}`} alt="Model" />
+            <Typography variant="body2" style={{ background: "#eeeeee", marginBottom: "5px", borderRadius: '6px', paddingLeft: '10px' }}>{model.type}</Typography>
+            <Box style={{ height: '33vh', display: 'flex', justifyContent: 'center', marginBottom: '25px', marginTop: '10px' }}>
+                <img src={`/image/${model.image}`} alt="Model" />
+            </Box>
         </>
     );
 }

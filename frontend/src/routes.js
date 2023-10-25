@@ -6,6 +6,7 @@ import PrivateRoute from './PrivateRoute';
 import LoginPage from "./pages/LoginPage";
 import CreateGame from "./pages/CreateGame";
 import DeletePage from "./pages/DeletePage";
+import BattleField from "./pages/BattleField";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,7 @@ const router = createBrowserRouter([
           { index: true, element: <HomePage /> },
           { path: 'create', element: <CreateGame /> },
           { path: 'delete', element: <DeletePage /> },
+          { path: 'battle_field', element: <BattleField /> }
         ]
       },
       

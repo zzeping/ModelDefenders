@@ -1,6 +1,9 @@
 import { useMutation } from 'react-query';
 import APIClient from '../services/api-client';
 import useAuthStore from '../store/authStore';
+import useGamesStore from '../store/gamesStore';
+import useBattleFieldStore from '../store/battleFieldStore';
+
 
 const authClient = new APIClient('/user/login');
 const authClient_r = new APIClient('/user/register');
@@ -75,13 +78,17 @@ export function useRegister() {
 
 export function useLogout() {
     const { logout } = useAuthStore();
-  
+    const { removeGames } = useGamesStore();
+    const { leaveField } = useBattleFieldStore();
+
     const handleLogout = () => {
-      localStorage.removeItem('token');
-      logout();
-      };
-  
-    return {
-      handleLogout,
+        localStorage.removeItem('token');
+        removeGames();
+        leaveField();
+        logout();
     };
-  }
+
+    return {
+        handleLogout,
+    };
+}
