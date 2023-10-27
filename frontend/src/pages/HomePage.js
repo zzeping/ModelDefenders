@@ -85,7 +85,7 @@ const HomePage = () => {
                 setDisble(false);
                 if (game.defenderId === user.id) setrole("defender");
                 if (game.attackerId === user.id) setrole("attacker");
-                else if (game.ownerId === user.id) setrole("owner");
+                else if (game.ownerId === user.id&&game.defenderId !== user.id&&game.attackerId !== user.id) setrole("owner");
             }
             else setDisble(true)
         }
