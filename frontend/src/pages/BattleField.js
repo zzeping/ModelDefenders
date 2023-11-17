@@ -4,6 +4,7 @@ import useAuthStore from '../store/authStore';
 import useBattleFieldStore from '../store/battleFieldStore';
 import TestCase from '../components/TestCase';
 import ModelImage from '../components/ModelImage';
+import GraphEditor from '../components/GraphEditor';
 
 
 const BattleField = () => {
@@ -30,7 +31,7 @@ const BattleField = () => {
             <Grid item xs={7}>
                 <Typography variant="h5">{role === "defender" ? 'Define a new test case here' : 'Model a new mutant here'}</Typography>
                 <Typography variant="body2" style={{ background: "#eeeeee", borderRadius: '4px', paddingLeft: '10px' }}>{role === "defender" ? 'Test case' : 'EDG'}</Typography>
-                {role === "defender" ? <TestCase /> : <><Paper style={{ height: '37vh', overflowY: 'auto', width: '100%' }} ></Paper><Box style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+                {role === "defender" ? <TestCase /> : <><GraphEditor /><Box style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
                     <Button
                         color="primary"
                         variant="contained"
