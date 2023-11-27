@@ -90,9 +90,24 @@ const TestCase = () => {
             setEventType(method.ownerEventType)
             setOpenAtt(true)
         } else if (method.type === 'END') {
+            console.log("dependencies"+dependencies)
             setObjectType(method.ownerObjectType)
             setEventType(method.ownerEventType)
-            setAvaObjs(objects.filter((obj) => obj.objType === method.ownerObjectType))
+            setAvaObjs(objects.filter((obj) => {
+                if (obj.objType === method.ownerObjectType) {
+                    const dependenciesForObjName = dependencies.filter(dep => dep.master === obj.objName);
+                    const allDependents = dependenciesForObjName.map(dep => dep.dependent);
+                    console.log("allDependents:" + allDependents)
+                    if (allDependents.length!==0) {
+                        if (allDependents.every(dependent => !objects.map(obj => obj.objName).includes(dependent))) { // the dependent object doesn't exist in the objects array
+                            return true;
+                        } else return false;
+                    } else {
+                        return true;
+                    }
+                }
+                return false;
+            }))
             setOpenChange(true)
             setEnd(true)
         } else {
@@ -254,8 +269,8 @@ const TestCase = () => {
                         <EventsOverview EIDtoName={EIDtoName} OIDtoName={OIDtoName} events={case_view?.event_tests} />
                     </TableContainer>
                     <Box style={{ display: 'flex', marginTop: '10px', width: '99.3%', borderRadius: '4px', background: "#eeeeee", padding: '3px' }}>
-                        <Typography style={{marginLeft:'8px'}} variant="body2">Expected outcome: {case_view?.expected_out}</Typography>
-                        <Typography variant="body2" style={{ marginLeft:'auto', marginRight:'20px'}}>Event count: {case_view?.count}</Typography>
+                        <Typography style={{ marginLeft: '8px' }} variant="body2">Expected outcome: {case_view?.expected_out}</Typography>
+                        <Typography variant="body2" style={{ marginLeft: 'auto', marginRight: '20px' }}>Event count: {case_view?.count}</Typography>
                     </Box>
                     <DialogActions>
                         <Button onClick={handleViewClose}>Close</Button>
@@ -268,7 +283,7 @@ const TestCase = () => {
                     color="primary"
                     variant="contained"
                     style={{ width: '100%' }}
-                    disabled={testCases.length===0}
+                    disabled={testCases.length === 0}
                     onClick={handleDefend}
                 >Defend</Button>
             </Box>

@@ -212,7 +212,7 @@ const GraphEditor = () => {
         <Button
           color="primary"
           variant="contained"
-          style={{ width: '100%' }}
+          style={{ width: '100%', background:"#BB1E10" }}
           // disabled={true}
           onClick={handleAttack}
         >Attack</Button>
