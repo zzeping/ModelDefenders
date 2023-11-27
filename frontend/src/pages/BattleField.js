@@ -31,14 +31,7 @@ const BattleField = () => {
             <Grid item xs={7}>
                 <Typography variant="h5">{role === "defender" ? 'Define a new test case here' : 'Model a new mutant here'}</Typography>
                 <Typography variant="body2" style={{ background: "#eeeeee", borderRadius: '4px', paddingLeft: '10px' }}>{role === "defender" ? 'Test case' : 'EDG'}</Typography>
-                {role === "defender" ? <TestCase /> : <><GraphEditor /><Box style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-                    <Button
-                        color="primary"
-                        variant="contained"
-                        style={{ width: '100%' }}
-                        disabled={true}
-                    >Attack</Button>
-                </Box></>}
+                {role === "defender" ? <TestCase /> : <GraphEditor />}
 
                 <Typography style={{ marginTop: '38px' }} variant="h5">{role === "defender" ? 'Existing test cases' : 'Existing mutants'}</Typography>
                 <Typography variant="body2" style={{ background: "#eeeeee", borderRadius: '4px', paddingLeft: '10px' }}>{role === "defender" ? 'Test cases from previous test suites' : 'All mutants'}</Typography>

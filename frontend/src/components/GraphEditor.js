@@ -38,6 +38,10 @@ const GraphEditor = () => {
     setCurrent_link(linkType)
   };
 
+  const handleAttack = () => {
+    console.log(graph.getLinks())
+  }
+
   const setLinkAttr = (link, type) => {
     if (type === "MANDATORY_1" || type === "MANDATORY_N") {
       link.attr({
@@ -141,6 +145,7 @@ const GraphEditor = () => {
           id: dependency.id,
           source: { id: NametoID(dependency.name.master) },
           target: { id: NametoID(dependency.name.dependent) },
+          type: dependency.type,
         });
         setLinkAttr(link, dependency.type)
         graph.addCell(link);
@@ -156,7 +161,6 @@ const GraphEditor = () => {
         paper.on('link:mouseleave', function (linkView) {
           linkView.removeTools();
         });
-        // console.log(dependency)
       })
 
       graph.on('remove', (cell, collection, opt) => {
@@ -165,12 +169,6 @@ const GraphEditor = () => {
         }
       });
 
-      graph.on('add', (cell, collection, opt) => {
-        if (cell.isLink()) {
-          // Log information about the newly created link
-          console.log('New Link created:', cell);
-        }
-      });
 
       setGraph(graph);
       setPaper(paper);
@@ -178,7 +176,6 @@ const GraphEditor = () => {
       // Clean up the graph when the component is unmounted
       return () => {
         graph.off('remove');
-        graph.off('add');
         graph.clear();
       };
     }
@@ -188,6 +185,7 @@ const GraphEditor = () => {
     if (graph && paper) {
       paper.options.defaultLink = () => {
         const new_link = new joint.shapes.standard.Link();
+        new_link.attributes.type = current_link
         // Set link attributes based on current_link
         setLinkAttr(new_link, current_link);
         return new_link;
@@ -198,17 +196,28 @@ const GraphEditor = () => {
 
 
   return (
-    <Box display="flex">
-      <Box display="flex" flexDirection="column" >
-        <Button style={{ maxWidth: '30px', minWidth: '30px', margin: '0px', padding: '0px', backgroundColor: current_link === 'MANDATORY_1' ? 'lightblue' : 'transparent', }} onClick={() => handleButtonClicked('MANDATORY_1')}><DependencyMandatory1 /></Button>
-        <Button style={{ maxWidth: '30px', minWidth: '30px', margin: '0px', padding: '0px', backgroundColor: current_link === 'MANDATORY_N' ? 'lightblue' : 'transparent', }} onClick={() => handleButtonClicked('MANDATORY_N')}><DependencyMandatoryN /></Button>
-        <Button style={{ maxWidth: '30px', minWidth: '30px', margin: '0px', padding: '0px', backgroundColor: current_link === 'OPTIONAL_1' ? 'lightblue' : 'transparent', }} onClick={() => handleButtonClicked('OPTIONAL_1')}><DependencyOptional1 /></Button>
-        <Button style={{ maxWidth: '30px', minWidth: '30px', margin: '0px', padding: '0px', backgroundColor: current_link === 'OPTIONAL_N' ? 'lightblue' : 'transparent', }} onClick={() => handleButtonClicked('OPTIONAL_N')}><DependencyOptionalN /></Button>
+    <>
+      <Box display="flex">
+        <Box display="flex" flexDirection="column" >
+          <Button style={{ maxWidth: '30px', minWidth: '30px', margin: '0px', padding: '0px', backgroundColor: current_link === 'MANDATORY_1' ? 'lightblue' : 'transparent', }} onClick={() => handleButtonClicked('MANDATORY_1')}><DependencyMandatory1 /></Button>
+          <Button style={{ maxWidth: '30px', minWidth: '30px', margin: '0px', padding: '0px', backgroundColor: current_link === 'MANDATORY_N' ? 'lightblue' : 'transparent', }} onClick={() => handleButtonClicked('MANDATORY_N')}><DependencyMandatoryN /></Button>
+          <Button style={{ maxWidth: '30px', minWidth: '30px', margin: '0px', padding: '0px', backgroundColor: current_link === 'OPTIONAL_1' ? 'lightblue' : 'transparent', }} onClick={() => handleButtonClicked('OPTIONAL_1')}><DependencyOptional1 /></Button>
+          <Button style={{ maxWidth: '30px', minWidth: '30px', margin: '0px', padding: '0px', backgroundColor: current_link === 'OPTIONAL_N' ? 'lightblue' : 'transparent', }} onClick={() => handleButtonClicked('OPTIONAL_N')}><DependencyOptionalN /></Button>
+        </Box>
+        <Box style={{ width: '100%', height: '37vh', overflow: 'auto' }}>
+          <div ref={containerRef} />
+        </Box>
       </Box>
-      <Box style={{ width: '100%', height: '37vh', overflow: 'auto' }}>
-        <div ref={containerRef} />
+      <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+        <Button
+          color="primary"
+          variant="contained"
+          style={{ width: '100%' }}
+          // disabled={true}
+          onClick={handleAttack}
+        >Attack</Button>
       </Box>
-    </Box>
+    </>
 
   )
 
