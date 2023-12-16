@@ -95,16 +95,17 @@ const TestCase = () => {
             setEventType(method.ownerEventType)
             setAvaObjs(objects.filter((obj) => {
                 if (obj.objType === method.ownerObjectType) {
-                    const dependenciesForObjName = dependencies.filter(dep => dep.master === obj.objName);
-                    const allDependents = dependenciesForObjName.map(dep => dep.dependent);
-                    console.log("allDependents:" + allDependents)
-                    if (allDependents.length!==0) {
-                        if (allDependents.every(dependent => !objects.map(obj => obj.objName).includes(dependent))) { // the dependent object doesn't exist in the objects array
-                            return true;
-                        } else return false;
-                    } else {
-                        return true;
-                    }
+                    // const dependenciesForObjName = dependencies.filter(dep => dep.master === obj.objName);
+                    // const allDependents = dependenciesForObjName.map(dep => dep.dependent);
+                    // console.log("allDependents:" + allDependents)
+                    // if (allDependents.length!==0) {
+                    //     if (allDependents.every(dependent => !objects.map(obj => obj.objName).includes(dependent))) { // the dependent object doesn't exist in the objects array
+                    //         return true;
+                    //     } else return false;
+                    // } else {
+                    //     return true;
+                    // }
+                    return true
                 }
                 return false;
             }))

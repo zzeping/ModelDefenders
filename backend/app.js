@@ -17,6 +17,7 @@ app.use(express.static("uploads"));
 app.use('/api/user', require('./routes/userRoutes'));
 app.use('/api/model', require('./routes/modelRoutes'));
 app.use('/api/game', require('./routes/gameRoutes'));
+app.use('/api/mutant', require('./routes/mutantRoutes'));
 
 //Keep this at end of file
 app.listen(PORT, () => {

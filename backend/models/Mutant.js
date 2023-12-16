@@ -4,8 +4,8 @@ const { sequelize, DataTypes } = require('./db')
 const Mutant = sequelize.define('Mutant', {
     id: {
         primaryKey: true,
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4
     },
     state: {
         type: DataTypes.ENUM('dead', 'alive'),
@@ -13,7 +13,7 @@ const Mutant = sequelize.define('Mutant', {
         defaultValue: 'alive',
     },
     MXP: {
-        type: DataTypes.STRING,
+        type: DataTypes.JSONB,
         allowNull: false,
     },
     userId: {

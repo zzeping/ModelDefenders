@@ -7,10 +7,14 @@ import { default as DependencyOptionalN } from './icons/dep_optional_n'
 import { default as DependencyOptional1 } from './icons/dep_optional_1'
 import { default as DependencyMandatoryN } from './icons/dep_mandatory_n'
 import { default as DependencyMandatory1 } from './icons/dep_mandatory_1'
+import useAddMutant from '../hook/useAddMutant';
+import useAuthStore from '../store/authStore';
 
 
 const GraphEditor = () => {
   const modelId = useBattleFieldStore((state) => state.modelId);
+  const game = useBattleFieldStore((state) => state.game);
+  const user = useAuthStore((state) => state.user);
 
   const { data: model } = useModel(modelId); // get the model data of the current game
 
@@ -21,9 +25,10 @@ const GraphEditor = () => {
   const smallestY = Math.min(...nodes.map((node) => node.position.y));
   const dependencies = model.content.metamodel.dependencies
 
-  const [current_link, setCurrent_link] = useState('MANDATORY_1');
+  const [current_link, setCurrent_link] = useState('MANDATORY_1'); // it's the dependency type selected by the user
   const [graph, setGraph] = useState(null);
   const [paper, setPaper] = useState(null);
+  const { handleAddMutant, isAdding, error } = useAddMutant();
 
   const OIDtoName = (id) => {
     const matching_obj = objectTypes.find((type) => type.id === id)
@@ -38,8 +43,49 @@ const GraphEditor = () => {
     setCurrent_link(linkType)
   };
 
-  const handleAttack = () => {
-    console.log(graph.getLinks())
+  const handleAttack = async () => {
+    const links = graph.getLinks();
+    const newDependencies = [];
+    for (const link of links) {
+      const newDependency = {
+        id: link.id,
+        master: link.attributes.source.id,
+        dependent: link.attributes.target.id,
+        type: link.attributes.type,
+        name: {
+          dependent: OIDtoName(link.attributes.target.id),
+          master: OIDtoName(link.attributes.source.id),
+        }
+      }
+      newDependencies.push(newDependency);
+    }
+    console.log(newDependencies)
+
+    const MXP = {
+      dependencies: newDependencies,
+      nodes: model.content.uimodel.edg.nodes,
+    }
+    
+    
+    const formData = new FormData();
+    formData.append('gameId', game)
+    formData.append('MXP', MXP)
+    formData.append('userId', user.id)
+    console.log(MXP)
+    
+
+    try {
+      const newMutant = await handleAddMutant(formData)
+    } catch (error) {
+      console.error('Axios error:', error);
+    }
+
+    // Create a data URL from the SVG string
+    // const imageDataURL = `data:image/svg+xml;base64,${btoa(svgString)}`;
+    // const svg = paper.svg.cloneNode(true);
+    // const serializer = new XMLSerializer();
+    // const svgString = serializer.serializeToString(svg);
+
   }
 
   const setLinkAttr = (link, type) => {
@@ -212,10 +258,10 @@ const GraphEditor = () => {
         <Button
           color="primary"
           variant="contained"
-          style={{ width: '100%', background:"#BB1E10" }}
+          style={{ width: '100%', background: "#BB1E10" }}
           // disabled={true}
           onClick={handleAttack}
-        >Attack</Button>
+        >{isAdding ? 'Attacking...' : 'Attack'}</Button>
       </Box>
     </>
 
