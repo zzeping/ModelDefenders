@@ -120,9 +120,6 @@ const TestCase = () => {
 
     }
 
-    console.log(dependencies)
-
-
 
 
     const selectStyle = {

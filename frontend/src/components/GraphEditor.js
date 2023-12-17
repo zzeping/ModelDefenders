@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as joint from 'jointjs';
+import _ from 'lodash';
 import useModel from '../hook/useModel';
 import useBattleFieldStore from '../store/battleFieldStore';
 import { Box, Button } from '@mui/material';
@@ -13,7 +14,7 @@ import useAuthStore from '../store/authStore';
 
 const GraphEditor = () => {
   const modelId = useBattleFieldStore((state) => state.modelId);
-  const game = useBattleFieldStore((state) => state.game);
+  const gameId = useBattleFieldStore((state) => state.gameId);
   const user = useAuthStore((state) => state.user);
 
   const { data: model } = useModel(modelId); // get the model data of the current game
@@ -59,26 +60,50 @@ const GraphEditor = () => {
       }
       newDependencies.push(newDependency);
     }
-    console.log(newDependencies)
+
+    // Function to check if two dependencies are considered equal
+    const areObjectsEqual = (obj1, obj2) => {
+      return obj1.master === obj2.master && obj1.dependent === obj2.dependent && obj1.type === obj2.type;
+    };
+
+    // Function to find the common objects between two arrays
+    const findCommonObjects = (arr1, arr2) => {
+      return arr1.filter(obj1 =>
+        arr2.some(obj2 => areObjectsEqual(obj1, obj2))
+      );
+    };
+
+    // Find common objects between dependencies and newDependencies
+    const commonObjects = findCommonObjects(dependencies, newDependencies);
+    const changes = dependencies.length - commonObjects.length
 
     const MXP = {
       dependencies: newDependencies,
-      nodes: model.content.uimodel.edg.nodes,
+      nodes: nodes,
+      changes: changes
     }
+    MXP.nodes.forEach(node => {
+      node.name = OIDtoName(node.objectType);
+    });
     
-    
-    const formData = new FormData();
-    formData.append('gameId', game)
-    formData.append('MXP', MXP)
-    formData.append('userId', user.id)
-    console.log(MXP)
-    
+    const data = {
+      gameId: gameId,
+      MXP: MXP,
+      userId: user.id,
+    };
+    console.log(data)
 
-    try {
-      const newMutant = await handleAddMutant(formData)
-    } catch (error) {
-      console.error('Axios error:', error);
+    if (changes == 0) {
+      alert("The mutant can't be the same as the model.")
+    } else {
+      try {
+        const newMutant = await handleAddMutant(data)
+      } catch (error) {
+        console.error('Axios error:', error);
+      }
     }
+
+
 
     // Create a data URL from the SVG string
     // const imageDataURL = `data:image/svg+xml;base64,${btoa(svgString)}`;

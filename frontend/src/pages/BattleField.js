@@ -5,12 +5,13 @@ import useBattleFieldStore from '../store/battleFieldStore';
 import TestCase from '../components/TestCase';
 import ModelImage from '../components/ModelImage';
 import GraphEditor from '../components/GraphEditor';
-
+import Mutants from '../components/Mutants';
+import Testcases from '../components/Testcases';
 
 const BattleField = () => {
 
     const user = useAuthStore((state) => state.user);
-    const game = useBattleFieldStore((state) => state.game);
+    const gameId = useBattleFieldStore((state) => state.gameId);
     const modelId = useBattleFieldStore((state) => state.modelId);
     const role = useBattleFieldStore((state) => state.role);
 
@@ -26,6 +27,7 @@ const BattleField = () => {
                 <Typography style={{ marginTop: '105px' }} variant="h5">{role === "defender" ? 'All mutants' : 'All test cases'}</Typography>
                 <Typography variant="body2" style={{ background: "#eeeeee", borderRadius: '4px', paddingLeft: '10px' }}>{role === "defender" ? 'All mutants' : 'Test cases'}</Typography>
                 <Paper style={{ height: '24vh', overflowY: 'auto', width: '100%' }} >
+                    {role === "defender" ? <Mutants /> : <Testcases />}
                 </Paper>
             </Grid>
             <Grid item xs={7}>

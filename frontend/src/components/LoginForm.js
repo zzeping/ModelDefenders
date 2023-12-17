@@ -23,7 +23,6 @@ const LoginForm = () => {
 
     // when login page is loaded, this will run to check if the user is already login. 
     useEffect(() => {
-        console.log("effect")
         const token = localStorage.getItem('token');
         if (token && !user) {
             const decoded = jwtDecode(token);

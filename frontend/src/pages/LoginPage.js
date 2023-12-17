@@ -10,7 +10,6 @@ const LoginPage = () => {
     const toggleForm = () => {
         setUserHasAccount((prevUserHasAccount) => !prevUserHasAccount);
     };
-    console.log("login page")
 
     return (
         <Container maxWidth={false}>

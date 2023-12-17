@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const mutantController = require('../controllers/mutantController');
-const multer = require('multer');
 
 
 // const storage = multer.diskStorage({
@@ -14,9 +13,8 @@ const multer = require('multer');
 // });
 // const upload = multer({ storage: storage });
 
-const upload = multer(); 
 
-router.post('/', upload.none(), mutantController.createMutant);
+router.post('/', mutantController.createMutant);
 router.get('/game/:id', mutantController.getGameMutants);
 router.get('/:id', mutantController.getMutant);
 router.delete('/:id', mutantController.deleteMutant);

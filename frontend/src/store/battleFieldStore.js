@@ -4,8 +4,8 @@ const useBattleFieldStore = create((set) => ({
     gameId: '',
     role: '',
     modelId: '',
-    setGame: (game) => {
-        set({ game })
+    setGame: (gameId) => {
+        set({ gameId })
     },
     setRole: (role) => {
         set({ role })
