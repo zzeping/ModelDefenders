@@ -75,7 +75,10 @@ const GraphEditor = () => {
 
     // Find common objects between dependencies and newDependencies
     const commonObjects = findCommonObjects(dependencies, newDependencies);
-    const changes = dependencies.length - commonObjects.length
+    const newLinks = findnewLink(newDependencies, dependencies);
+    
+    
+    const changes = dependencies.length - commonObjects.length + newLinks.length
 
     const MXP = {
       dependencies: newDependencies,
@@ -85,16 +88,17 @@ const GraphEditor = () => {
     MXP.nodes.forEach(node => {
       node.name = OIDtoName(node.objectType);
     });
-    
+
     const data = {
       gameId: gameId,
       MXP: MXP,
       userId: user.id,
     };
-    console.log(data)
 
     if (changes == 0) {
       alert("The mutant can't be the same as the model.")
+    } else if (!hasCircle(newDependencies)) {
+      alert("The graph can't contain circle.")
     } else {
       try {
         const newMutant = await handleAddMutant(data)
@@ -112,6 +116,54 @@ const GraphEditor = () => {
     // const svgString = serializer.serializeToString(svg);
 
   }
+
+  const findnewLink = (arr1, arr2) => {
+    // Function to check if two dependencies direction are considered equal
+    const areLinkEqual = (obj1, obj2) => {
+      return obj1.master === obj2.master && obj1.dependent === obj2.dependent;
+    };
+  
+    return arr1.filter(obj1 =>
+      !arr2.some(obj2 => areLinkEqual(obj1, obj2))
+    );
+  };
+
+  function hasCircle(arr) {
+    const graph = {}; // Represent the graph using an adjacency list
+    const visited = {}; // Keep track of visited nodes during DFS
+    // Build the graph
+    arr.forEach(item => {
+      if (!graph[item.master]) {
+        graph[item.master] = [];
+      }
+      graph[item.master].push(item.dependent);
+    });
+
+    function hasCircleDFS(node, ancestors) {
+      if (visited[node]) {
+        return ancestors.includes(node);
+      }
+      visited[node] = true;
+      ancestors.push(node);
+      if (graph[node]) {
+        for (const neighbor of graph[node]) {
+          if (hasCircleDFS(neighbor, ancestors)) {
+            return true;
+          }
+        }
+      }
+      ancestors.pop();
+      return false;
+    }
+    // Check for a circle starting from each node
+    for (const node in graph) {
+      if (!visited[node] && hasCircleDFS(node, [])) {
+        return false; // Circle found
+      }
+    }
+    return true; // No circle found
+  }
+
 
   const setLinkAttr = (link, type) => {
     if (type === "MANDATORY_1" || type === "MANDATORY_N") {

@@ -37,7 +37,9 @@ const BattleField = () => {
 
                 <Typography style={{ marginTop: '38px' }} variant="h5">{role === "defender" ? 'Existing test cases' : 'Existing mutants'}</Typography>
                 <Typography variant="body2" style={{ background: "#eeeeee", borderRadius: '4px', paddingLeft: '10px' }}>{role === "defender" ? 'Test cases from previous test suites' : 'All mutants'}</Typography>
-                <Paper style={{ height: '24vh', overflowY: 'auto', width: '100%' }} ></Paper>
+                <Paper style={{ height: '24vh', overflowY: 'auto', width: '100%' }} >
+                {role === "defender" ? <Testcases /> :<Mutants />}
+                </Paper>
             </Grid>
         </Grid>
     )

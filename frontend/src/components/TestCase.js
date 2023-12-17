@@ -90,7 +90,7 @@ const TestCase = () => {
             setEventType(method.ownerEventType)
             setOpenAtt(true)
         } else if (method.type === 'END') {
-            console.log("dependencies"+dependencies)
+            console.log(dependencies)
             setObjectType(method.ownerObjectType)
             setEventType(method.ownerEventType)
             setAvaObjs(objects.filter((obj) => {
@@ -210,8 +210,8 @@ const TestCase = () => {
     }
 
     const handleDefend = () => {
-
-
+        console.log(testCases)
+        setTestCases([])
     }
 
     const OIDtoName = (id) => {

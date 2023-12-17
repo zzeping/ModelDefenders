@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import useGameMutants from '../hook/useMutants';
 import { List, ListItem, Dialog, DialogTitle, Box, DialogActions, ListItemText, Button, Chip } from '@mui/material';
 import * as joint from 'jointjs';
+import useBattleFieldStore from '../store/battleFieldStore';
 
 
 
@@ -11,6 +12,7 @@ const Mutants = () => {
     const { data: mutants } = useGameMutants();
     const [open_mutant, setOpenMutant] = useState(false); // mutant view dialog
     const containerRef = useRef(null);
+    const role = useBattleFieldStore((state) => state.role);
 
 
 
@@ -20,7 +22,6 @@ const Mutants = () => {
         const dependencies = mutant.MXP.dependencies;
         const graph = new joint.dia.Graph();
         const smallestY = Math.min(...nodes.map((node) => node.position.y));
-        console.log(mutant)
 
         // Delay the creation of Paper to ensure that containerRef.current is accessible
         setTimeout(() => {
@@ -107,7 +108,7 @@ const Mutants = () => {
             <List style={{ paddingTop: '0px' }}>
                 {mutants && mutants.map((mutant, index) => (
                     <ListItem key={mutant.id} style={{ height: '20px', borderBottom: '1px solid #ccc', }} secondaryAction={<>
-                        {mutant.state === "alive" ?
+                        {mutant.state === "alive" && role === "defender" ?
                             <Chip label={mutant.state} style={{ height: '18px', fontSize: '12px', borderRadius: '4px', color: 'white', background: 'red' }} /> :
                             <Chip label={mutant.state} style={{ height: '18px', fontSize: '12px', borderRadius: '4px', color: 'white', background: 'green' }} />}
                         {'\u00A0'}

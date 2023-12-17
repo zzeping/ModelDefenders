@@ -18,6 +18,7 @@ app.use('/api/user', require('./routes/userRoutes'));
 app.use('/api/model', require('./routes/modelRoutes'));
 app.use('/api/game', require('./routes/gameRoutes'));
 app.use('/api/mutant', require('./routes/mutantRoutes'));
+app.use('/api/testCase', require('./routes/testCaseRoutes'));
 
 //Keep this at end of file
 app.listen(PORT, () => {
