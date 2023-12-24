@@ -7,10 +7,16 @@ import useBattleFieldStore from '../store/battleFieldStore';
 import CreateObject from './CreateObject';
 import ChangeObject from './ChangeObject';
 import EventsOverview from './EventsOverview';
+import useAddTestCase from '../hook/useAddTestCase';
+import check from './check';
+import useGameMutants from '../hook/useMutants';
+
 
 const TestCase = () => {
 
     const modelId = useBattleFieldStore((state) => state.modelId);
+    const { handleAddTestCase, isAdding, error } = useAddTestCase();
+    const { data: mutants } = useGameMutants();
 
     const { data: model } = useModel(modelId); // get the model data of the current game
 
@@ -23,6 +29,7 @@ const TestCase = () => {
     const [attributes, setAttributes] = useState([]); // attributes array for each object
     const [masters, setMasters] = useState([]); //matsers for dependent objects
     const [avaObjs, setAvaObjs] = useState([]); // the objects that can be ended or be modified. 
+    const [dependencyFail, setDependencyFail] = useState(false);
 
     // data of the model reading from mxp file
     const eventTypes = model.content.metamodel.eventTypes
@@ -35,12 +42,14 @@ const TestCase = () => {
     const [objects, setObjects] = useState([]);  // objName, objTypeID
     const [events, setEvents] = useState([]);  // eventID, eventTypeID, objType, objID
     const [dependencies, setDependencies] = useState([]); // masterName, dependentName, dependencyType
-    const [testCases, setTestCases] = useState([]);
+    // const [testCases, setTestCases] = useState([]);
+    const [testCase, setTestCase] = useState('');
     const [expected, setExpected] = useState('Success'); // set the expected value for the current test case. 
 
 
     const [objectType, setObjectType] = useState(''); // indicate the objectTpye id when creating an object
-    const [eventType, setEventType] = useState(''); // indicate the eventTpye id when creating an event
+    const [eventId, setEventId] = useState(''); // indicate the event id when creating an event
+    const [eventType, setEventType] = useState('');
 
     const [inputValues, setInputValues] = useState({}); //store the input attributes when creating an object 
     const [chosenMasters, setChosenMasters] = useState({}); //store the chosen masters when creating an object
@@ -48,33 +57,35 @@ const TestCase = () => {
 
 
     // handel adding a test case for the current test suite 
-    const handleAddCase = () => {
-        const newCase = {
-            id: testCases.length + 1,
-            expected_out: expected,
-            count: events.length,
-            event_tests: events,
-            obj_tests: objects,
-            dependency_tests: dependencies,
-        }
-        setTestCases((prev) => [...prev, newCase])
-        setObjects([])
-        setDependencies([])
-        setEvents([])
-    }
+    // const handleAddCase = () => {
+    //     const newCase = {
+    //         id: testCases.length + 1,
+    //         expected_out: expected,
+    //         count: events.length,
+    //         event_tests: events,
+    //         obj_tests: objects,
+    //         dependency_tests: dependencies,
+    //     }
+    //     setTestCase(newCase)
+    //     setTestCases((prev) => [...prev, newCase])
+    //     setObjects([])
+    //     setDependencies([])
+    //     setEvents([])
+    // }
 
     // after clicking the button of a test case
-    const handelCaseView = (e) => {
-        const testCase = testCases.find((testCase) => testCase.id == e.target.value)
-        setCaseView(testCase)
-        setOpenCase(true)
-    }
+    // const handelCaseView = (e) => {
+    //     const testCase = testCases.find((testCase) => testCase.id == e.target.value)
+    //     setCaseView(testCase)
+    //     setOpenCase(true)
+    // }
 
 
     // after clicking the add button of an event
     const handleAddEvent = (e) => {
         const method = ownedMethods.find((method) => method.ownerEventType === e.target.value)
         const matching_obj = objectTypes.find((obj) => obj.id === method.ownerObjectType);
+        setEventType(method.type);
         if (method.type === 'CREATE') {
             dependencyTypes.forEach((dependency) => {
                 if (dependency.dependent === matching_obj.id) {
@@ -87,24 +98,22 @@ const TestCase = () => {
             });
             setAttributes(matching_obj.attributes)
             setObjectType(method.ownerObjectType)
-            setEventType(method.ownerEventType)
+            setEventId(method.ownerEventType)
             setOpenAtt(true)
+
         } else if (method.type === 'END') {
-            console.log(dependencies)
             setObjectType(method.ownerObjectType)
-            setEventType(method.ownerEventType)
+            setEventId(method.ownerEventType)
             setAvaObjs(objects.filter((obj) => {
+
                 if (obj.objType === method.ownerObjectType) {
-                    // const dependenciesForObjName = dependencies.filter(dep => dep.master === obj.objName);
-                    // const allDependents = dependenciesForObjName.map(dep => dep.dependent);
-                    // console.log("allDependents:" + allDependents)
-                    // if (allDependents.length!==0) {
-                    //     if (allDependents.every(dependent => !objects.map(obj => obj.objName).includes(dependent))) { // the dependent object doesn't exist in the objects array
-                    //         return true;
-                    //     } else return false;
-                    // } else {
-                    //     return true;
-                    // }
+                    const dependenciesForObjName = dependencies.filter(dep => dep.master === obj.objName);
+                    const allDependents = dependenciesForObjName.map(dep => dep.dependent);
+                    if (allDependents.length !== 0) {
+                        if (!allDependents.every(dependent => !objects.map(obj => obj.objName).includes(dependent))) { // the dependent object exists in the objects array
+                            setDependencyFail(true); // if one object the is ended and his dependent still exist, the result has to be fail. 
+                        }
+                    }
                     return true
                 }
                 return false;
@@ -113,7 +122,7 @@ const TestCase = () => {
             setEnd(true)
         } else {
             setObjectType(method.ownerObjectType)
-            setEventType(method.ownerEventType)
+            setEventId(method.ownerEventType)
             setAvaObjs(objects.filter((obj) => obj.objType === method.ownerObjectType))
             setOpenChange(true)
         }
@@ -147,6 +156,7 @@ const TestCase = () => {
             };
             const newEvent = {
                 id: events.length,
+                eventId: eventId,
                 eventType: eventType,
                 objType: objectType,
                 objName: inputValues['name'] || '',
@@ -170,6 +180,7 @@ const TestCase = () => {
             alert("The object exists. Please change a name.")
             setInputValues({})
         }
+        if (masters.length !== Object.keys(chosenMasters).length) setDependencyFail(true) // when there is unset master, the expected should be fail
     }
 
     // adding event when ending or modifying an object 
@@ -177,6 +188,7 @@ const TestCase = () => {
 
         const newEvent = {
             id: events.length,
+            eventId: eventId,
             eventType: eventType,
             objType: objectType,
             objName: e.target.value,
@@ -191,14 +203,15 @@ const TestCase = () => {
     }
 
     // close the case view dialog
-    const handleViewClose = () => {
-        setOpenCase(false)
-    }
+    // const handleViewClose = () => {
+    //     setOpenCase(false)
+    // }
 
     // close the add event, add attributes, and end/modify dialog  
     const handleClose = () => {
         setAvaObjs([])
         setEventType('')
+        setEventId('')
         setObjectType('')
         setAttributes([])
         setInputValues({})
@@ -207,11 +220,42 @@ const TestCase = () => {
         setOpenAtt(false)
         setOpenChange(false)
         setOpen(false)
+
     }
 
-    const handleDefend = () => {
-        console.log(testCases)
-        setTestCases([])
+
+    const handleDefend = async () => {
+        const newCase = {
+            expected_out: expected,
+            count: events.length,
+            event_tests: events,
+            obj_tests: objects,
+            dependency_tests: dependencies,
+        }
+        setTestCase(newCase)
+
+        console.log(newCase)
+        console.log(mutants)
+        console.log(ownedMethods)
+        console.log(objects)
+
+        if (expected === "Success" && dependencyFail) {
+            alert("The expected result cannot be success.")
+        } else if (expected === "Fail" && !dependencyFail) {
+            alert("The expected result cannot be fail.")
+        } else {
+            const mutants_new = check(mutants, events, expected, dependencies);
+            console.log(mutants_new)
+        }
+
+
+
+
+        // try {
+        //     const newTestCase = await handleAddTestCase(newCase)
+        //   } catch (error) {
+        //     console.error('Axios error:', error);
+        //   }
     }
 
     const OIDtoName = (id) => {
@@ -226,7 +270,7 @@ const TestCase = () => {
     return (
         <>
             <Paper>
-                <Box style={{ height: '23vh', overflowY: 'auto', width: '100%' }}>
+                <Box style={{ height: '29vh', overflowY: 'auto', width: '100%' }}>
                     <TableContainer style={{ display: 'flex', justifyContent: 'center' }}>
                         <EventsOverview EIDtoName={EIDtoName} OIDtoName={OIDtoName} events={events} />
                     </TableContainer>
@@ -243,16 +287,16 @@ const TestCase = () => {
                 <Box style={{ display: 'flex', marginTop: '0', width: '99.3%', borderRadius: '4px', background: "#eeeeee", padding: '3px' }}>
                     <Typography variant="body2" style={{ marginLeft: '20px' }}>Expected outcome:</Typography>
                     <Select size="small" value={expected} style={selectStyle} onChange={(e) => setExpected(e.target.value)}>
-                        <MenuItem style={menuItemStyle} value="Success">Sucess</MenuItem>
+                        <MenuItem style={menuItemStyle} value="Success">Success</MenuItem>
                         <MenuItem style={menuItemStyle} value="Fail">Fail</MenuItem>
                     </Select>
                     <Typography variant="body2" style={{ marginLeft: '20px' }}>Event count: {events.length}</Typography>
-                    <Button onClick={() => { setEvents([]); setObjects([]); setDependencies([]); }} style={{ marginLeft: '20px', height: '20px', fontSize: '10px', padding: '5px', color: 'red' }}>Clear events</Button>
-                    <Button disabled={events.length === 0} onClick={handleAddCase} variant="contained" style={{ marginRight: '20px', height: '20px', marginLeft: 'auto', fontSize: '10px', padding: '5px' }}>Add test case</Button>
+                    <Button onClick={() => { setEvents([]); setObjects([]); setDependencies([]); setDependencyFail(false) }} style={{ marginLeft: '20px', height: '20px', fontSize: '10px', padding: '5px', color: 'red' }}>Clear events</Button>
+                    {/* <Button disabled={events.length === 0} onClick={handleAddCase} variant="contained" style={{ marginRight: '20px', height: '20px', marginLeft: 'auto', fontSize: '10px', padding: '5px' }}>Add test case</Button> */}
                 </Box>
             </Paper>
 
-            <Typography variant="body2" style={{ background: "#eeeeee", borderRadius: '4px', paddingLeft: '10px', marginTop: '10px' }}>Test cases in current test suite</Typography>
+            {/* <Typography variant="body2" style={{ background: "#eeeeee", borderRadius: '4px', paddingLeft: '10px', marginTop: '10px' }}>Test cases in current test suite</Typography>
             <Paper style={{ height: '7vh', overflowY: 'auto', width: '100%' }} >
                 <List style={{ paddingTop: '0px' }}>
                     {testCases && testCases.map((testCase) => (
@@ -275,13 +319,13 @@ const TestCase = () => {
                     </DialogActions>
                 </Dialog>
 
-            </Paper>
-            <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+            </Paper> */}
+            <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '46px' }}>
                 <Button
                     color="primary"
                     variant="contained"
                     style={{ width: '100%' }}
-                    disabled={testCases.length === 0}
+                    disabled={events.length === 0}
                     onClick={handleDefend}
                 >Defend</Button>
             </Box>

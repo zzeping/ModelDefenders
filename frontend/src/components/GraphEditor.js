@@ -223,7 +223,6 @@ const GraphEditor = () => {
           if (cellViewS === cellViewT) {
             return false;
           }
-
           // Check if a link already exists between the source and target cells
           const links = graph.getLinks();
           for (const link of links) {
@@ -234,15 +233,10 @@ const GraphEditor = () => {
               return false;
             }
           }
-
           // Connection between non-rectangular elements is not allowed
           if (cellViewS.model.get('type') !== 'standard.Rectangle' || cellViewT.model.get('type') !== 'standard.Rectangle') {
             return false;
           }
-
-          // Check for cycles before allowing the connection
-
-
           return true;
         }
       });

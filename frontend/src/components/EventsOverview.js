@@ -16,7 +16,7 @@ const EventsOverview = ({ EIDtoName, OIDtoName, events }) => {
                 <TableBody>
                     {(events.length !== 0) && events && events.map((event) => (
                         <TableRow key={event.id}>
-                            <TableCell>{EIDtoName(event.eventType)}</TableCell>
+                            <TableCell>{EIDtoName(event.eventId)}</TableCell>
                             <TableCell>{event.objName}</TableCell>
                             <TableCell>{OIDtoName(event.objType)}</TableCell>
                         </TableRow>
