@@ -168,8 +168,18 @@ const TestCase = () => {
                     dependent: newName,
                     dependencyType: dependencyTypes.find((dependencyType) => dependencyType.master === objects.find((obj) => obj.objName === chosenMasters[key]).objType && dependencyType.dependent === objectType)
                 }
+
+                // if the dependency is one to one, and the master of the dependent already have other dependent
+                if(newDependency.dependencyType === "OPTIONAL_1" || newDependency.dependencyType === "MANDATORY_1" ) {
+                    if( dependencies.some((obj) => obj.dependencyType === newDependency.dependencyType && obj.master === chosenMasters[key] ) ) {
+                        setDependencyFail(true)
+                    }
+                }
+
                 setDependencies((pre) => [...pre, newDependency])
             }
+
+            if (masters.length !== Object.keys(chosenMasters).length) setDependencyFail(true) // when there is unset master, the expected should be fail
 
             setObjects((prevObjs) => [...prevObjs, newObj])
             setEvents((prevEvents) => [...prevEvents, newEvent])
@@ -180,7 +190,6 @@ const TestCase = () => {
             alert("The object exists. Please change a name.")
             setInputValues({})
         }
-        if (masters.length !== Object.keys(chosenMasters).length) setDependencyFail(true) // when there is unset master, the expected should be fail
     }
 
     // adding event when ending or modifying an object 
@@ -225,6 +234,16 @@ const TestCase = () => {
 
 
     const handleDefend = async () => {
+        // if a mandatory master doesn't have a corresponding dependent, set the fail. 
+        objects.forEach((obj)=>{
+            // the dependency types for the object exsit that it's a mandtory master and the current dependencies doesn't have the dependency type for the master
+            if(dependencyTypes.some((dep) => dep.master === obj.objType && (dep.type === "MANDATORY_1" || dep.type === "MANDATORY_N") && !dependencies.some((existdep) => existdep.dependencyType.id === dep.id && existdep.master === obj.objName))) {
+                if(expected === "Success") {
+                    alert("Invalid test case. ")
+                }
+            }
+        })
+
         const newCase = {
             expected_out: expected,
             count: events.length,
@@ -239,17 +258,12 @@ const TestCase = () => {
         console.log(ownedMethods)
         console.log(objects)
 
-        if (expected === "Success" && dependencyFail) {
-            alert("The expected result cannot be success.")
-        } else if (expected === "Fail" && !dependencyFail) {
-            alert("The expected result cannot be fail.")
+        if ((expected === "Success" && dependencyFail) || (expected === "Fail" && !dependencyFail)) {
+            alert("Invalid test case. ")
         } else {
-            const mutants_new = check(mutants, events, expected, dependencies);
+            const mutants_new = check(mutants, events, expected, dependencies, objects);
             console.log(mutants_new)
         }
-
-
-
 
         // try {
         //     const newTestCase = await handleAddTestCase(newCase)
