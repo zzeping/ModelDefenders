@@ -98,7 +98,7 @@ class userController {
 
       res.status(200).json({ token, user });
     } catch (error) {
-      res.status(500).json({ error: 'Authentication failed' });
+      res.status(503).json({ error: 'Service Unavailable' });
     }
   };
 

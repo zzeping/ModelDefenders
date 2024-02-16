@@ -55,7 +55,13 @@ const LoginForm = () => {
             await handleLogin(username, password);
             navigate('/');
         } catch (error) {
-            alert('Invalid username or password');
+            if(error.code === "ERR_BAD_REQUEST") {
+                alert('Invalid username or password');
+            } else if(error.code === "ERR_NETWORK") {
+                alert('Server unavailable');
+            } else {
+                alert(error.message)
+            }
             setUsername('');
             setPassword('');
         }

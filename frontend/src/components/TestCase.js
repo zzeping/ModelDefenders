@@ -154,14 +154,7 @@ const TestCase = () => {
                 objType: objectType,
                 objName: newName,
             };
-            const newEvent = {
-                id: events.length,
-                eventId: eventId,
-                eventType: eventType,
-                objType: objectType,
-                objName: inputValues['name'] || '',
-            };
-
+            let relatedTo = [];
             for (const key in chosenMasters) {
                 const newDependency = {
                     master: chosenMasters[key],
@@ -169,15 +162,28 @@ const TestCase = () => {
                     dependencyType: dependencyTypes.find((dependencyType) => dependencyType.master === objects.find((obj) => obj.objName === chosenMasters[key]).objType && dependencyType.dependent === objectType)
                 }
 
+                relatedTo.push({[key]:chosenMasters[key]})
+
                 // if the dependency is one to one, and the master of the dependent already have other dependent
-                if(newDependency.dependencyType === "OPTIONAL_1" || newDependency.dependencyType === "MANDATORY_1" ) {
-                    if( dependencies.some((obj) => obj.dependencyType === newDependency.dependencyType && obj.master === chosenMasters[key] ) ) {
+                if (newDependency.dependencyType === "OPTIONAL_1" || newDependency.dependencyType === "MANDATORY_1") {
+                    if (dependencies.some((obj) => obj.dependencyType === newDependency.dependencyType && obj.master === chosenMasters[key])) {
                         setDependencyFail(true)
                     }
                 }
 
                 setDependencies((pre) => [...pre, newDependency])
             }
+
+            const newEvent = {
+                id: events.length,
+                eventId: eventId,
+                eventType: eventType,
+                objType: objectType,
+                objName: inputValues['name'] || '',
+                relatedTo: relatedTo,
+            };
+
+
 
             if (masters.length !== Object.keys(chosenMasters).length) setDependencyFail(true) // when there is unset master, the expected should be fail
 
@@ -235,20 +241,18 @@ const TestCase = () => {
 
     const handleDefend = async () => {
         // if a mandatory master doesn't have a corresponding dependent, set the fail. 
-        objects.forEach((obj)=>{
+        objects.forEach((obj) => {
             // the dependency types for the object exsit that it's a mandtory master and the current dependencies doesn't have the dependency type for the master
-            if(dependencyTypes.some((dep) => dep.master === obj.objType && (dep.type === "MANDATORY_1" || dep.type === "MANDATORY_N") && !dependencies.some((existdep) => existdep.dependencyType.id === dep.id && existdep.master === obj.objName))) {
-                if(expected === "Success") {
+            if (dependencyTypes.some((dep) => dep.master === obj.objType && (dep.type === "MANDATORY_1" || dep.type === "MANDATORY_N") && !dependencies.some((existdep) => existdep.dependencyType.id === dep.id && existdep.master === obj.objName))) {
+                if (expected === "Success") {
                     alert("Invalid test case. ")
                 }
             }
         })
 
         const newCase = {
-            expected_out: expected,
-            count: events.length,
-            event_tests: events,
-            obj_tests: objects,
+            outCome: expected,
+            events: events,
             dependency_tests: dependencies,
         }
         setTestCase(newCase)
@@ -299,11 +303,11 @@ const TestCase = () => {
 
                 </Box>
                 <Box style={{ display: 'flex', marginTop: '0', width: '99.3%', borderRadius: '4px', background: "#eeeeee", padding: '3px' }}>
-                    <Typography variant="body2" style={{ marginLeft: '20px' }}>Expected outcome:</Typography>
-                    <Select size="small" value={expected} style={selectStyle} onChange={(e) => setExpected(e.target.value)}>
+                    {/* <Typography variant="body2" style={{ marginLeft: '20px' }}>Expected outcome:</Typography> */}
+                    {/* <Select size="small" value={expected} style={selectStyle} onChange={(e) => setExpected(e.target.value)}>
                         <MenuItem style={menuItemStyle} value="Success">Success</MenuItem>
                         <MenuItem style={menuItemStyle} value="Fail">Fail</MenuItem>
-                    </Select>
+                    </Select> */}
                     <Typography variant="body2" style={{ marginLeft: '20px' }}>Event count: {events.length}</Typography>
                     <Button onClick={() => { setEvents([]); setObjects([]); setDependencies([]); setDependencyFail(false) }} style={{ marginLeft: '20px', height: '20px', fontSize: '10px', padding: '5px', color: 'red' }}>Clear events</Button>
                     {/* <Button disabled={events.length === 0} onClick={handleAddCase} variant="contained" style={{ marginRight: '20px', height: '20px', marginLeft: 'auto', fontSize: '10px', padding: '5px' }}>Add test case</Button> */}
