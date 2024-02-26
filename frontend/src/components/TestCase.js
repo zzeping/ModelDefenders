@@ -37,6 +37,16 @@ const TestCase = () => {
     const objectTypes = model.content.metamodel.objectTypes
     const dependencyTypes = model.content.metamodel.dependencies
     const ownedMethods = methods.filter((method) => method.provenance === 'OWNED');
+    const updatedEventTypes = eventTypes.map((eventType) => {
+        const matchingMethod = ownedMethods.find((method) => method.ownerEventType === eventType.id);
+        const matchingObj = objectTypes.find((obj) => obj.id === matchingMethod.ownerObjectType);
+        return {
+            ...eventType,
+            methodType: matchingMethod ? matchingMethod.type : null,
+            objType: matchingMethod ? matchingMethod.ownerObjectType : null,
+            objName: matchingObj ? matchingObj.name : null,
+        };
+    });
 
     // each test case suite has testCases, each test case has objects, events, dependencies
     const [objects, setObjects] = useState([]);  // objName, objTypeID
@@ -85,7 +95,7 @@ const TestCase = () => {
     const handleAddEvent = (e) => {
         const method = ownedMethods.find((method) => method.ownerEventType === e.target.value)
         const matching_obj = objectTypes.find((obj) => obj.id === method.ownerObjectType);
-        setEventType(method.type);
+        setEventType(updatedEventTypes.find((evType) => evType.id === e.target.value));
         if (method.type === 'CREATE') {
             dependencyTypes.forEach((dependency) => {
                 if (dependency.dependent === matching_obj.id) {
@@ -129,7 +139,9 @@ const TestCase = () => {
 
     }
 
-
+    const updateEvents = (newEvents) => {
+        setEvents(newEvents);
+      };
 
     const selectStyle = {
         background: (expected === "Success" ? "green" : "red"),
@@ -178,9 +190,13 @@ const TestCase = () => {
                 id: events.length,
                 eventId: eventId,
                 eventType: eventType,
-                objType: objectType,
+                eventName: eventType.name,
+                objType: eventType.objType,
+                objTypeName: eventType.objName,
                 objName: inputValues['name'] || '',
                 relatedTo: relatedTo,
+                outCome: "Success",
+                isEditMode: false,
             };
 
 
@@ -205,8 +221,10 @@ const TestCase = () => {
             id: events.length,
             eventId: eventId,
             eventType: eventType,
+            eventName: eventType.name,
             objType: objectType,
             objName: e.target.value,
+            relatedTo: '',
         };
         setEvents((prevEvents) => [...prevEvents, newEvent])
         if (end) {
@@ -290,7 +308,7 @@ const TestCase = () => {
             <Paper>
                 <Box style={{ height: '29vh', overflowY: 'auto', width: '100%' }}>
                     <TableContainer style={{ display: 'flex', justifyContent: 'center' }}>
-                        <EventsOverview EIDtoName={EIDtoName} OIDtoName={OIDtoName} events={events} />
+                        <EventsOverview EIDtoName={EIDtoName} OIDtoName={OIDtoName} events={events} setEvents={setEvents} />
                     </TableContainer>
                     {(events.length === 0) && events && <Typography style={{ marginLeft: '20px' }}>No events added yet.</Typography>}
 

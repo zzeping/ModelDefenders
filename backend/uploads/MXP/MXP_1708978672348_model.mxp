@@ -358,10 +358,10 @@
     <mxp:view id="1" name="Main" isdefault="true">
       <mxp:guidescription>The main view</mxp:guidescription>
       <mxp:guiobjects>
-        <mxp:guiobject refid="1" location="20.00!95.00" size="100.00!50.00" borderthickness="1" bordercolor="0-0-0" backgroundcolor="255-255-255" gradientcolor="null" textcolor="0-0-0" fontfamily="Arial" fontsize="12" fontbold="false" fontitalic="false"/>
-        <mxp:guiobject refid="24" location="55.00!236.00" size="100.00!50.00" borderthickness="1" bordercolor="0-0-0" backgroundcolor="255-255-255" gradientcolor="null" textcolor="0-0-0" fontfamily="Arial" fontsize="12" fontbold="false" fontitalic="false"/>
-        <mxp:guiobject refid="59" location="262.00!96.00" size="100.00!50.00" borderthickness="1" bordercolor="0-0-0" backgroundcolor="255-255-255" gradientcolor="null" textcolor="0-0-0" fontfamily="Arial" fontsize="12" fontbold="false" fontitalic="false"/>
-        <mxp:guiobject refid="75" location="195.00!342.00" size="100.00!50.00" borderthickness="1" bordercolor="0-0-0" backgroundcolor="255-255-255" gradientcolor="null" textcolor="0-0-0" fontfamily="Arial" fontsize="12" fontbold="false" fontitalic="false"/>
+        <mxp:guiobject refid="1" location="20.00!96.00" size="100.00!50.00" borderthickness="1" bordercolor="0-0-0" backgroundcolor="255-255-255" gradientcolor="null" textcolor="0-0-0" fontfamily="Arial" fontsize="12" fontbold="false" fontitalic="false"/>
+        <mxp:guiobject refid="24" location="54.00!236.00" size="100.00!50.00" borderthickness="1" bordercolor="0-0-0" backgroundcolor="255-255-255" gradientcolor="null" textcolor="0-0-0" fontfamily="Arial" fontsize="12" fontbold="false" fontitalic="false"/>
+        <mxp:guiobject refid="59" location="261.00!96.00" size="100.00!50.00" borderthickness="1" bordercolor="0-0-0" backgroundcolor="255-255-255" gradientcolor="null" textcolor="0-0-0" fontfamily="Arial" fontsize="12" fontbold="false" fontitalic="false"/>
+        <mxp:guiobject refid="75" location="196.00!342.00" size="100.00!50.00" borderthickness="1" bordercolor="0-0-0" backgroundcolor="255-255-255" gradientcolor="null" textcolor="0-0-0" fontfamily="Arial" fontsize="12" fontbold="false" fontitalic="false"/>
       </mxp:guiobjects>
       <mxp:guidependencies>
         <mxp:guidependency refid="98" linewidth="1" linecolor="0-0-0" labelvisible="false" labelposition="-0.00!0.00" textcolor="0-0-0" fontfamily="Arial" fontsize="12" fontbold="false" fontitalic="false">

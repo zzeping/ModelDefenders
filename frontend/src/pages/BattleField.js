@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Paper, Box, Typography, Grid } from '@mui/material';
 import useAuthStore from '../store/authStore';
 import useBattleFieldStore from '../store/battleFieldStore';
-import TestCase from '../components/TestCase';
+import TestCase from '../components/TestCase copy';
 import ModelImage from '../components/ModelImage';
 import GraphEditor from '../components/GraphEditor';
 import Mutants from '../components/Mutants';

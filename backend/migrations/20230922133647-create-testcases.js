@@ -2,16 +2,12 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('TestCase', {
+    await queryInterface.createTable('TestCases', {
       id: {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.INTEGER,
         autoIncrement: true,
-      },
-      outCome: {
-        type: Sequelize.ENUM('pass', 'fail'),
-        allowNull: false,
       },
       userId: {
         type: Sequelize.UUID,

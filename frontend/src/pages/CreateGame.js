@@ -16,8 +16,6 @@ const CreateGame = () => {
     const navigate = useNavigate();
 
     const handleAdd = async (e) => {
-        e.preventDefault();
-
         let attackerId = null;
         let defenderId = null;
         if (role === 'Attacker') {

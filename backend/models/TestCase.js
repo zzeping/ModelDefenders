@@ -7,10 +7,6 @@ const TestCase = sequelize.define('TestCase', {
         type: DataTypes.INTEGER,
         autoIncrement: true,
     },
-    outCome: {
-        type: DataTypes.ENUM('pass', 'fail'),
-        allowNull: false,
-    },
     events: {
         type: DataTypes.ARRAY(DataTypes.STRING),
         allowNull: false,
