@@ -8,7 +8,7 @@ const TestCase = sequelize.define('TestCase', {
         autoIncrement: true,
     },
     events: {
-        type: DataTypes.ARRAY(DataTypes.STRING),
+        type: DataTypes.ARRAY(DataTypes.TEXT),
         allowNull: false,
     },
     userId: {

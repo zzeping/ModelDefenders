@@ -47,6 +47,15 @@ class testCaseController {
         }
     }
 
+    static async getAllTC(req, res) {
+        try {
+          const tcs = await TestCase.findAll();
+          res.status(200).json(tcs);
+        } catch (err) {
+          res.status(404).json({ message: err.message })
+        }
+      }
+
 }
 
 module.exports = testCaseController;

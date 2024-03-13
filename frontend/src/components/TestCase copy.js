@@ -11,6 +11,7 @@ import useAddTestCase from '../hook/useAddTestCase';
 import useAuthStore from '../store/authStore';
 
 
+
 const TestCase = () => {
 
     const modelId = useBattleFieldStore((state) => state.modelId);
@@ -86,12 +87,11 @@ const TestCase = () => {
             setAvaObjs(objects.filter((obj) => obj.objType === method.ownerObjectType))
             setOpenChange(true)
         }
-        seteventid(eventid + 1)
     }
 
     // after clicking submit button and create an object
     const handleSubmit = () => {
-
+        seteventid(eventid + 1)
         const newName = inputValues['name'] || '';
         const objectExists = objects.some((obj) => obj.objType === objectType && obj.objName === newName);
         if (!objectExists && newName !== '') {
@@ -131,7 +131,7 @@ const TestCase = () => {
     const handleObj = (e) => {
 
         const newEvent = {
-            id: events.length,
+            id: eventid,
             eventId: eventType.id,
             eventName: eventType.name,
             eventType: eventType.methodType,
@@ -143,6 +143,7 @@ const TestCase = () => {
             isEditMode: false,
         };
         setEvents((prevEvents) => [...prevEvents, newEvent])
+        seteventid(eventid + 1)
         handleClose();
     }
 
@@ -176,12 +177,13 @@ const TestCase = () => {
                 userId: user.id,
                 gameId
             })
-        } catch (error) {
-            alert('Unable to add the test case.');
+            setEvents([]);
+            seteventid(0);
+            setObjects([])
+        } catch (err) {
+            alert(err.response.data.message);
         }
-        setEvents([]);
-        seteventid(0);
-        setObjects([])
+
     }
 
     return (

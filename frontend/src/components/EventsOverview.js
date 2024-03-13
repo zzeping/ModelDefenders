@@ -123,7 +123,7 @@ const EventsOverview = ({ events, setEvents, dependencyTypes, objects }) => {
                                             ))}
                                         </Select> </ListItem>
                                 ))}
-                            </>) : (event.relatedTo.map((item, index) => (
+                            </>) : (event.relatedTo?.map((item, index) => (
                                 <span key={index}>{item[Object.keys(item)[0]]}{index === Object.keys(event.relatedTo).length - 1 ? '' : ', '}</span>
                             )))}</TableCell>
                             <TableCell>{event.isEditMode ? (<Select
