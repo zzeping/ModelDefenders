@@ -18,6 +18,7 @@ router.post('/', mutantController.createMutant);
 router.get('/game/:id', mutantController.getGameMutants);
 router.get('/:id', mutantController.getMutant);
 router.delete('/:id', mutantController.deleteMutant);
+router.patch('',mutantController.resetMutants)
 
 
 module.exports = router;

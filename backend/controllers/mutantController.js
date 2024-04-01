@@ -46,6 +46,15 @@ class mutantController {
             res.status(404).json({ message: err.message })
         }
     }
+    static async resetMutants(req, res) {
+        try {
+            const mutants = await Mutant.findAll();
+            mutants.map( async m => {m.state = 'alive'; await m.save();} )
+
+        } catch (err) {
+            res.status(404).json({ message: err.message })
+        }
+    }
 
 }
 

@@ -14,8 +14,14 @@ class testCaseController {
     }
     static async deleteTestCase(req, res) {
         const id = req.params.id;
+        const game = req.params.game
         try {
-            const testCase = await TestCase.findByPk(id);
+            const testCase = await TestCase.findOne({
+                where: {
+                    id: id,
+                    gameId: game
+                }
+            });
             if (!testCase) {
                 return res.status(401).json({ error: 'Test case not found.' });;
             }
@@ -49,12 +55,12 @@ class testCaseController {
 
     static async getAllTC(req, res) {
         try {
-          const tcs = await TestCase.findAll();
-          res.status(200).json(tcs);
+            const tcs = await TestCase.findAll();
+            res.status(200).json(tcs);
         } catch (err) {
-          res.status(404).json({ message: err.message })
+            res.status(404).json({ message: err.message })
         }
-      }
+    }
 
 }
 

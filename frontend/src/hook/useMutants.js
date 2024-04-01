@@ -6,12 +6,14 @@ const mutantsApiClient = new APIClient('/mutant/game');
 
 const useGameMutants = () => {
   const gameId = useBattleFieldStore((state) => state.gameId);
-  return useQuery('mutants', async () => {
-
+  const fetchMutants = async () => {
     const mutants = await mutantsApiClient.get(gameId);
-
     return mutants;
-  });
+  }
+  const { data, refetch } = useQuery('mutants', fetchMutants);
+
+
+  return { data, refetch };
 };
 
 export default useGameMutants;

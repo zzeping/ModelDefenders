@@ -9,7 +9,7 @@ import ChangeObject from './ChangeObject';
 import EventsOverview from './EventsOverview';
 import useAddTestCase from '../hook/useAddTestCase';
 import useAuthStore from '../store/authStore';
-
+import useGameMutants from '../hook/useMutants';
 
 
 const TestCase = () => {
@@ -17,6 +17,7 @@ const TestCase = () => {
     const modelId = useBattleFieldStore((state) => state.modelId);
     const { handleAddTestCase, isAdding, error } = useAddTestCase();
     const { data: model } = useModel(modelId); // get the model data of the current game
+    const { refetch } = useGameMutants();
     const user = useAuthStore((state) => state.user);
     const gameId = useBattleFieldStore((state) => state.gameId);
 
@@ -142,6 +143,7 @@ const TestCase = () => {
             outCome: "Success",
             isEditMode: false,
         };
+        console.log(newEvent)
         setEvents((prevEvents) => [...prevEvents, newEvent])
         seteventid(eventid + 1)
         handleClose();
@@ -177,6 +179,7 @@ const TestCase = () => {
                 userId: user.id,
                 gameId
             })
+            refetch()
             setEvents([]);
             seteventid(0);
             setObjects([])
