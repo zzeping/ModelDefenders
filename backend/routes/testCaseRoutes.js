@@ -11,6 +11,8 @@ router.get('/game/:id', testCaseController.getGameTestCases);
 router.get('/:id', testCaseController.getTestCase);
 router.get('', testCaseController.getAllTC);
 router.delete('/:game/:id', testCaseController.deleteTestCase);
+router.delete('/:game', testCaseController.deleteTestCases);
+
 
 
 module.exports = router;

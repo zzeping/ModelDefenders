@@ -35,7 +35,7 @@ async function test_validation_check(req, res, next) {
                         const masterType = Object.keys(relatedObj)[0];
                         return objects.some(obj => obj.type === masterType && obj.name === relatedObj[masterType]);
                     });
-                    if (!objsexist) throw new Error('Invalid test case.');
+                    if (!objsexist) throw new Error('Invalid test case.1');
 
                     dependencies.forEach(dependency => {
                         // check if all the dependencies has the corresponding masters. 
@@ -64,8 +64,8 @@ async function test_validation_check(req, res, next) {
                     }
                 }
 
-                if (event.outCome === "Success" && fail_flag === 1) throw new Error('Invalid test case.');
-                if (event.outCome === "Fail" && fail_flag === 0) throw new Error('Invalid test case.');
+                if (event.outCome === "Success" && fail_flag === 1) throw new Error('Invalid test case.2');
+                if (event.outCome === "Fail" && fail_flag === 0) throw new Error('Invalid test case.3');
 
                 let object = {
                     name: event.objName,
@@ -97,8 +97,8 @@ async function test_validation_check(req, res, next) {
                     })
                 }
 
-                if (event.outCome === "Success" && fail_flag === 1) throw new Error('Invalid test case.');
-                if (event.outCome === "Fail" && fail_flag === 0) throw new Error('Invalid test case.');
+                if (event.outCome === "Success" && fail_flag === 1) throw new Error('Invalid test case.4');
+                if (event.outCome === "Fail" && fail_flag === 0) throw new Error('Invalid test case.5');
 
                 const indexOfobj = objects.findIndex(obj => obj.name === event.objName && obj.type === event.objTypeName);
                 if (indexOfobj !== -1) {
@@ -107,7 +107,7 @@ async function test_validation_check(req, res, next) {
             }
 
         })
-        if(Object.keys(mandatory_dependency).length !== 0) throw new Error('Invalid test case.');
+        if(Object.keys(mandatory_dependency).length !== 0) throw new Error('Invalid test case.6');
     } catch (error) {
         return res.status(406).json({ message: `${error.message}` });
     }

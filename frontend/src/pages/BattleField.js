@@ -4,7 +4,7 @@ import useAuthStore from '../store/authStore';
 import useBattleFieldStore from '../store/battleFieldStore';
 import TestCase from '../components/TestCase copy';
 import ModelImage from '../components/ModelImage';
-import GraphEditor from '../components/GraphEditor';
+import GraphEditor from '../components/GraphEditor copy';
 import Mutants from '../components/Mutants';
 import Testcases from '../components/Testcases';
 

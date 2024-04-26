@@ -25,6 +25,20 @@ class mutantController {
             res.status(404).json({ message: err.message })
         }
     }
+
+    static async deleteMutants(req, res) {
+        const game = req.params.game;
+        try {
+            const mutants = await Mutant.findAll({
+                where: { gameId: game }
+            });
+            mutants.forEach( async m => {await m.destroy();} )
+            res.status(200).json({ message: "Mutants deleted successfully!" })
+        } catch (err) {
+            res.status(404).json({ message: err.message })
+        }
+    }
+
     static async getMutant(req, res) {
         const id = req.params.id;
         try {
@@ -47,10 +61,13 @@ class mutantController {
         }
     }
     static async resetMutants(req, res) {
+        const game = req.params.game;
         try {
-            const mutants = await Mutant.findAll();
-            mutants.map( async m => {m.state = 'alive'; await m.save();} )
-
+            const mutants = await Mutant.findAll({
+                where: { gameId: game }
+            });
+            mutants.forEach( async m => {m.state = 'alive'; await m.save();} )
+            res.status(200).json({ message: "Mutant reset successfully!" })
         } catch (err) {
             res.status(404).json({ message: err.message })
         }

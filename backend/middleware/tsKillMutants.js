@@ -24,7 +24,6 @@ async function tsKillMutants(req, res, next) {
                 if (!event.relatedTo.find(obj => obj[Object.keys(obj)[0]] === mandatory_dependency.master)) { fail_flag = 1; console.log("2") }
                 mandatory_dependency = {};
             }
-
             if (event.eventType === "CREATE") {
                 // find all the dependencies that the object that the mutant created needs a master.
                 let dependencies = mutant.MXP.dependencies.filter((dependency) => dependency.dependent === event.objType)
@@ -32,14 +31,15 @@ async function tsKillMutants(req, res, next) {
                     // check if all the dependencies has the corresponding masters. 
                     dependencies.forEach(dependency => {
                         let masterCreateEvents = events.some((e) => {
-                            e.eventType === "CREATE" && e.objType === dependency.master && event.relatedTo[e.objTypeName] === e.objName && objects.some(obj => obj.name === e.objTypeName && obj.type === e.objType);
+                            return e.eventType === "CREATE" && e.objType === dependency.master && event.relatedTo[e.objTypeName] === e.objName && objects.some(obj => obj.name === e.objName && obj.type === e.objType);
                         })
-                        if (!masterCreateEvents) { fail_flag = 1; console.log("3")}
+                        console.log(masterCreateEvents)
+                        if (!masterCreateEvents) { fail_flag = 1; console.log("3") }
                         // kill the case that creating another dependent of the master but the dependency is one-to-one 
                         else if (dependency.type === "OPTIONAL_1" || dependency.type === "MANDATORY_1") {
                             // check if the masters of the object for this dependency already has other dependent
                             let dependentCreateEvents = events.some((e) => {
-                                e.eventType === "CREATE" && e.objType === dependency.dependent && e.relatedTo[event.objTypeName] === event.objName && objects.some(obj => obj.name === e.objTypeName && obj.type === e.objType);
+                                return e.eventType === "CREATE" && e.objType === dependency.dependent && e.relatedTo[dependency.master] === event.relatedTo[dependency.master] && objects.some(obj => obj.name === e.objName && obj.type === e.objType);
                             })
                             if (dependentCreateEvents) { fail_flag = 1; console.log("4") }
                         }
@@ -68,7 +68,7 @@ async function tsKillMutants(req, res, next) {
                     // check if all the dependencies doesn't have the corresponding dependents. 
                     dependencies.forEach(dependency => {
                         let dependentCreateEvents = events.some((e) => {
-                            e.eventType === "CREATE" && e.objType === dependency.dependent && e.relatedTo[event.objTypeName] === event.objName && objects.some(obj => obj.name === e.objTypeName && obj.type === e.objType);
+                            return e.eventType === "CREATE" && e.objType === dependency.dependent && e.relatedTo[event.objTypeName] === event.objName && objects.some(obj => obj.name === e.objName && obj.type === e.objType);
                         })
                         if (dependentCreateEvents) { fail_flag = 1; console.log("5") }
                     })
@@ -79,8 +79,8 @@ async function tsKillMutants(req, res, next) {
                 }
 
             }
-            if (fail_flag === 1 && event.outCome === "Success") { kill = 1;console.log("6")}
-            if (fail_flag === 0 && event.outCome === "Fail")  { kill = 1;console.log("7")}
+            if (fail_flag === 1 && event.outCome === "Success") { kill = 1; console.log("6") }
+            if (fail_flag === 0 && event.outCome === "Fail") { kill = 1; console.log("7") }
 
         }
 

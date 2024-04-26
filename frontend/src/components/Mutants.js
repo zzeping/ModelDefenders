@@ -108,7 +108,7 @@ const Mutants = () => {
             <List style={{ paddingTop: '0px' }}>
                 {mutants && mutants.map((mutant, index) => (
                     <ListItem key={mutant.id} style={{ height: '20px', borderBottom: '1px solid #ccc', }} secondaryAction={<>
-                        {mutant.state === "alive" && role === "defender" ?
+                        {(mutant.state === "alive" && role === "defender")||(mutant.state === "dead" && role === "attacker") ?
                             <Chip label={mutant.state} style={{ height: '18px', fontSize: '12px', borderRadius: '4px', color: 'white', background: 'red' }} /> :
                             <Chip label={mutant.state} style={{ height: '18px', fontSize: '12px', borderRadius: '4px', color: 'white', background: 'green' }} />}
                         {'\u00A0'}

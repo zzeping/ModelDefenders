@@ -9,6 +9,8 @@ const Testcases = () => {
     const [open_case, setOpenCase] = useState(false); // case view dialog
     const [case_view, setCaseView] = useState({}); // the case that will be viewed in dialog
     const { data: testCases } = useGameTestCases();
+    const sortedTestCases = testCases ? [...testCases].sort((a, b) => a.id - b.id) : [];
+
 
 
     const handleViewClose = () => {
@@ -26,7 +28,7 @@ const Testcases = () => {
     return (
         <>
                 <List style={{ paddingTop: '0px' }}>
-                    {testCases && testCases.map((testCase) => (
+                    {sortedTestCases && sortedTestCases.map((testCase) => (
                         <ListItem key={testCase.id} style={{ height: '20px', borderBottom: '1px solid #ccc', }} secondaryAction={<Button value={testCase.id} variant="contained" onClick={handelCaseView} style={{ height: '18px', fontSize: '10px', }} edge="end">View</Button>}>
                             <ListItemText primaryTypographyProps={{ style: { fontSize: '12px' } }} primary={`Test case: ${testCase.id} ${'\u00A0'}${'\u00A0'}${'\u00A0'}Events: ${testCase.events.length}`} />
                         </ListItem>

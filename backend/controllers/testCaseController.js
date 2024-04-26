@@ -31,6 +31,20 @@ class testCaseController {
             res.status(404).json({ message: err.message })
         }
     }
+    static async deleteTestCases(req, res) {
+        const game = req.params.game
+        try {
+            const testCases = await TestCase.findAll({
+                where: {
+                    gameId: game
+                }
+            });
+            testCases.forEach(t => t.destroy())
+            res.status(200).json({ message: "Test case deleted successfully!" })
+        } catch (err) {
+            res.status(404).json({ message: err.message })
+        }
+    }
     static async getTestCase(req, res) {
         const id = req.params.id;
         try {

@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const mutantController = require('../controllers/mutantController');
-
+const mutant_validation_check = require('../middleware/mutantValidation')
+const mutantCheckKill = require('../middleware/mutantCheckKill')
 
 // const storage = multer.diskStorage({
 //     destination: function (req, file, cb) {
@@ -14,11 +15,12 @@ const mutantController = require('../controllers/mutantController');
 // const upload = multer({ storage: storage });
 
 
-router.post('/', mutantController.createMutant);
+router.post('/',mutant_validation_check, mutantCheckKill, mutantController.createMutant);
 router.get('/game/:id', mutantController.getGameMutants);
 router.get('/:id', mutantController.getMutant);
 router.delete('/:id', mutantController.deleteMutant);
-router.patch('',mutantController.resetMutants)
+router.delete('/game/:game', mutantController.deleteMutants);
+router.patch('/:game',mutantController.resetMutants)
 
 
 module.exports = router;
