@@ -5,7 +5,7 @@ import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined
 import SaveIcon from '@mui/icons-material/Save';
 import CloseIcon from '@mui/icons-material/Close';
 
-const EventsOverview = ({ events, setEvents, dependencyTypes, objects }) => {
+const EventsOverview = ({ events, setEvents, dependencyTypes, objects, setObjects }) => {
 
     const [masters, setMasters] = useState([]); //matsers for dependent objects
     const [chosenMasters, setChosenMasters] = useState({}); //store the chosen masters when creating an object
@@ -75,7 +75,16 @@ const EventsOverview = ({ events, setEvents, dependencyTypes, objects }) => {
     };
 
     const onDelete = (id) => {
+        let event = events.find((e) => e.id == id)
         const updatedEvents = events.filter((e) => e.id !== id);
+        if (event.eventType === "CREATE") {
+            setObjects(objects.filter((obj) => {
+                if (obj.objType === event.objType && obj.objName === event.objName) {
+                    return false
+                }
+                return true;
+            }))
+        }
         setEvents(updatedEvents);
     };
 
