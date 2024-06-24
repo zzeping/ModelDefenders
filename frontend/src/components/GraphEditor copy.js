@@ -74,7 +74,7 @@ const GraphEditor = () => {
       gameId: gameId,
       MXP: MXP,
       userId: user.id,
-      state:"alive",
+      state: "alive",
     };
 
 
@@ -98,49 +98,92 @@ const GraphEditor = () => {
 
 
   const setLinkAttr = (link, type) => {
-    if (type === "MANDATORY_1" || type === "MANDATORY_N") {
-      link.attr({
-        line: {
-          sourceMarker: {
-            'type': 'path',
-            'stroke': 'black',
-            'stroke-width': 2,
-            'fill': 'black',
-            'd': 'M 0 -5 A 5 5 0 1 0 0 5 A 5 5 0 1 0 0 -5',
+    switch (type) {
+      case 'MANDATORY_1':
+        link.attr({
+          line: {
+            sourceMarker: {
+              'type': 'path',
+              'stroke': 'black',
+              'stroke-width': 2,
+              'fill': 'black',
+              'd': 'M 0 -5 A 5 5 0 1 0 0 5 A 5 5 0 1 0 0 -5',
+            },
+            targetMarker: {
+              'stroke': 'none',
+              'fill': 'none',
+            },
           },
-        }
-      });
-    } else {
-      link.attr({
-        line: {
-          sourceMarker: {
-            'type': 'path',
-            'stroke': 'black',
-            'stroke-width': 2,
-            'fill': 'white',
-            'd': 'M 0 -5 A 5 5 0 1 0 0 5 A 5 5 0 1 0 0 -5',
+        });
+        break;
+      case 'MANDATORY_N':
+        link.attr({
+          line: {
+            sourceMarker: {
+              'type': 'path',
+              'stroke': 'black',
+              'stroke-width': 2,
+              'fill': 'black',
+              'd': 'M 0 -5 A 5 5 0 1 0 0 5 A 5 5 0 1 0 0 -5',
+            },
+            targetMarker: {
+              'type': 'path',
+              'stroke': 'black',
+              'stroke-width': 2,
+              'fill': 'none',
+              'd': 'M 10 -5 L 0 0 L 10 5', 
+            },
           },
-        }
-      });
+        });
+        break;
+      case 'OPTIONAL_1':
+        link.attr({
+          line: {
+            sourceMarker: {
+              'type': 'path',
+              'stroke': 'black',
+              'stroke-width': 2,
+              'fill': 'white',
+              'd': 'M 0 -5 A 5 5 0 1 0 0 5 A 5 5 0 1 0 0 -5',
+            },
+            targetMarker: {
+              'stroke': 'none',
+              'fill': 'none',
+            },
+          },
+        });
+        break;
+      case 'OPTIONAL_N':
+        link.attr({
+          line: {
+            sourceMarker: {
+              'type': 'path',
+              'stroke': 'black',
+              'stroke-width': 2,
+              'fill': 'white',
+              'd': 'M 0 -5 A 5 5 0 1 0 0 5 A 5 5 0 1 0 0 -5',
+            },
+            targetMarker: {
+              'type': 'path',
+              'stroke': 'black',
+              'stroke-width': 2,
+              'fill': 'none',
+              'd': 'M 10 -5 L 0 0 L 10 5', 
+            },
+          },
+        });
+        break;
+      default:
+        break;
     }
-    if (type === 'OPTIONAL_1' || type === 'MANDATORY_1') {
-      link.attr({
-        line: {
-          targetMarker: {
-            'stroke': 'none',
-            'fill': 'none',
-          },
-        }
-      });
-    }
-  }
+  };
 
   useEffect(() => {
     if (containerRef.current) {
       const graph = new joint.dia.Graph();
       const paper = new joint.dia.Paper({
         el: containerRef.current,
-        width: '100%',
+        width: '150%',
         height: '400',
         model: graph,
         gridSize: 10,
@@ -189,27 +232,86 @@ const GraphEditor = () => {
         paper.model.addCell(newNode);
       });
 
-      dependencies.forEach((dependency) => {
-        const link = new joint.shapes.standard.Link({
-          id: dependency.id,
-          source: { id: NametoID(dependency.name.master) },
-          target: { id: NametoID(dependency.name.dependent) },
-          type: dependency.type,
-        });
-        setLinkAttr(link, dependency.type)
-        graph.addCell(link);
+      // Keep track of existing links between the same source and target
+      let links = [];
+      let flag = 0;
 
-        const removeButton = new joint.linkTools.Remove();
-        const boundaryTool = new joint.linkTools.Boundary();
-        const linkToolsView = new joint.dia.ToolsView({
-          tools: [boundaryTool, removeButton],
-        });
-        paper.on('link:mouseenter', function (linkView) {
-          linkView.addTools(linkToolsView);
-        });
-        paper.on('link:mouseleave', function (linkView) {
-          linkView.removeTools();
-        });
+      dependencies.forEach((dependency, idx) => {
+        let { master, dependent } = dependency;
+        links.push({ f: master, t: dependent });
+      })
+      console.log(links)
+
+      dependencies.forEach((dependency, idx) => {
+        let { master, dependent, type } = dependency;
+        let count = links.filter(link => link.f === master && link.t === dependent).length;
+
+        // Check if a link already exists
+        if (count !== 1 && flag === 0) {
+          flag = 1;
+          // Adjust the position of the new link to make it distinguishable
+          const source = nodes.find((n) => n.objectType === master)
+          const target = nodes.find((n) => n.objectType === dependent)
+          const middel = [
+            {
+              x: (source.position.x + target.position.x) / 2 - 80,
+              y: (source.position.y + target.position.y) / 2 - 140
+            },
+          ]
+          // Create the new link with adjusted position
+          const link = new joint.shapes.standard.Link({
+            id: dependency.id,
+            source: { id: master },
+            target: { id: dependent },
+            vertices: middel,
+            type: type,
+          });
+
+          // Assign a different label to the new link
+          link.label(0, {
+            position: 0.5, // Adjust label position as needed
+            attrs: {
+              text: { text: dependency.name.dependent }, // Set the label text
+            },
+          });
+
+          setLinkAttr(link, type);
+          graph.addCell(link);
+
+        } else {
+          // Create a new link if no link exists between the same source and target
+          const link = new joint.shapes.standard.Link({
+            id: dependency.id,
+            source: { id: master },
+            target: { id: dependent },
+            type: type,
+          });
+          // Assign a different label to the new link
+          link.label(0, {
+            position: 0.5, // Adjust label position as needed
+            attrs: {
+              text: { text: dependency.name.dependent }, // Set the label text
+            },
+          });
+
+          setLinkAttr(link, type);
+          graph.addCell(link);
+        }
+
+      });
+      const removeButton = new joint.linkTools.Remove();
+      const boundaryTool = new joint.linkTools.Boundary();
+      const linkToolsView = new joint.dia.ToolsView({
+        tools: [boundaryTool, removeButton],
+      });
+      paper.on('link:mouseenter', function (linkView) {
+        linkView.addTools(linkToolsView);
+      });
+      paper.on('link:mouseleave', function (linkView) {
+        linkView.removeTools();
+      });
+      paper.on('link:pointerdblclick', function (linkView) {
+        toggleLinkType(linkView.model);
       })
 
       graph.on('remove', (cell, collection, opt) => {
@@ -229,6 +331,32 @@ const GraphEditor = () => {
       };
     }
   }, []);
+
+  const toggleLinkType = (link) => {
+    const currentType = link.attributes.type;
+    console.log("currentType: "+currentType)
+    let newType;
+    switch (currentType) {
+      case 'MANDATORY_1':
+        newType = 'MANDATORY_N';
+        break;
+      case 'MANDATORY_N':
+        newType = 'OPTIONAL_N';
+        break;
+      case 'OPTIONAL_N':
+        newType = 'OPTIONAL_1';
+        break;
+      case 'OPTIONAL_1':
+        newType = 'MANDATORY_1';
+        break;
+      default:
+        newType = currentType;
+    }
+    link.attributes.type = newType;
+    console.log("new type: "+ newType)
+    setLinkAttr(link, newType);
+  };
+
 
   useEffect(() => {
     if (graph && paper) {
