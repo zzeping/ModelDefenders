@@ -63,13 +63,16 @@ const TestCase = () => {
         if (method.type === 'CREATE') {
             dependencyTypes.forEach((dependency) => {
                 if (dependency.dependent === matching_obj.id) {
+                    // multiple relationships between two objects, display the dependent names to distinguish 
+                    let check_multi = dependencyTypes.filter(dep => dep.master === dependency.master && dep.dependent === dependency.dependent).length;
                     setMasters((prevMasters) => [...prevMasters, {
-                        name: dependency.name.master,
-                        id: dependency.master,
+                        name: (check_multi>1) ? dependency.name.dependent : dependency.name.master,
+                        id: dependency.id,
                         objs: objects.filter((obj) => obj.objType === dependency.master),
                     }])
                 }
             });
+            
             setAttributes(matching_obj.attributes)
             setObjectType(method.ownerObjectType)
             setOpenAtt(true)

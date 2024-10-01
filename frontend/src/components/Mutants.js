@@ -17,7 +17,7 @@ const Mutants = () => {
 
 
     const handelMutantView = (e) => {
-        const mutant = mutants.find((mutant) => mutant.id == e.target.value)
+        const mutant = mutants.find((mutant) => mutant.id === e.target.value)
         const nodes = mutant.MXP.nodes;
         const dependencies = mutant.MXP.dependencies;
         const graph = new joint.dia.Graph();
@@ -27,7 +27,7 @@ const Mutants = () => {
         setTimeout(() => {
             const paper = new joint.dia.Paper({
                 el: containerRef.current,
-                width: 400,
+                width: 1200,
                 height: 370,
                 model: graph,
                 gridSize: 10,
@@ -39,22 +39,63 @@ const Mutants = () => {
                     position: { x: node.position.x - 10, y: node.position.y - smallestY + 10 },
                     size: node.size,
                     attrs: {
-                        label:{text: node.name},
+                        label: { text: node.name },
                     },
                 });
                 paper.model.addCell(newNode);
             });
 
-            dependencies.forEach((dependency) => {
-                const link = new joint.shapes.standard.Link({
-                    id: dependency.id,
-                    source: { id: dependency.master },
-                    target: { id: dependency.dependent },
-                    type: dependency.type,
-                });
-                setLinkAttr(link, dependency.type)
-                graph.addCell(link);
+            // Keep track of existing links between the same source and target
+            let links = [];
+            let flag = 0;
+
+            dependencies.forEach((dependency, idx) => {
+                let { master, dependent } = dependency;
+                links.push({ f: master, t: dependent });
             })
+            console.log(links)
+
+            dependencies.forEach((dependency, idx) => {
+                let { master, dependent, type } = dependency;
+                let count = links.filter(link => link.f === master && link.t === dependent).length;
+
+                // Check if a link already exists
+                if (count !== 1 && flag === 0) {
+                    flag = 1;
+                    // Adjust the position of the new link to make it distinguishable
+                    const source = nodes.find((n) => n.objectType === master)
+                    const target = nodes.find((n) => n.objectType === dependent)
+                    const middel = [
+                        {
+                            x: (source.position.x + target.position.x) / 2 - 80,
+                            y: (source.position.y + target.position.y) / 2 - 140
+                        },
+                    ]
+                    // Create the new link with adjusted position
+                    const link = new joint.shapes.standard.Link({
+                        id: dependency.id,
+                        source: { id: master },
+                        target: { id: dependent },
+                        vertices: middel,
+                        type: type,
+                    });
+
+                    setLinkAttr(link, type);
+                    graph.addCell(link);
+
+                } else {
+                    // Create a new link if no link exists between the same source and target
+                    const link = new joint.shapes.standard.Link({
+                        id: dependency.id,
+                        source: { id: master },
+                        target: { id: dependent },
+                        type: type,
+                    });
+                    setLinkAttr(link, type);
+                    graph.addCell(link);
+                }
+
+            });
         }, 0);
         setOpenMutant(true)
     }
@@ -108,7 +149,7 @@ const Mutants = () => {
             <List style={{ paddingTop: '0px' }}>
                 {mutants && mutants.map((mutant, index) => (
                     <ListItem key={mutant.id} style={{ height: '20px', borderBottom: '1px solid #ccc', }} secondaryAction={<>
-                        {(mutant.state === "alive" && role === "defender")||(mutant.state === "dead" && role === "attacker") ?
+                        {(mutant.state === "alive" && role === "defender") || (mutant.state === "dead" && role === "attacker") ?
                             <Chip label={mutant.state} style={{ height: '18px', fontSize: '12px', borderRadius: '4px', color: 'white', background: 'red' }} /> :
                             <Chip label={mutant.state} style={{ height: '18px', fontSize: '12px', borderRadius: '4px', color: 'white', background: 'green' }} />}
                         {'\u00A0'}
@@ -123,7 +164,7 @@ const Mutants = () => {
             </List>
             <Dialog open={open_mutant} onClose={handleMutantClose}>
                 <DialogTitle>Mutant overview</DialogTitle>
-                <Box>
+                <Box style={{ width: '70vh', height: '100%', overflow: 'auto' }}>
                     <div ref={containerRef} />
                 </Box>
 
